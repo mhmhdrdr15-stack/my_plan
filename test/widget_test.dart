@@ -13,6 +13,37 @@ import 'package:my_plan/app_state.dart';
 import 'package:my_plan/main.dart';
 
 void main() {
+  testWidgets('opens today details from the dashboard', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.tap(find.text('Details'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Today's Details"), findsOneWidget);
+    expect(find.text('Macronutrients'), findsOneWidget);
+  });
+
+  testWidgets('opens snack details from the next meal card', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.scrollUntilVisible(
+      find.text('Next Meal'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byType(NextMealCard));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Foods in this meal'), findsOneWidget);
+    expect(find.text('Nutrition Summary'), findsOneWidget);
+  });
+
   testWidgets('displays the health dashboard', (WidgetTester tester) async {
     appLocale.value = const Locale('en');
     await tester.pumpWidget(const NutritionApp());

@@ -1,0 +1,1205 @@
+import 'dart:math' as math;
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class TodayDetailsScreen extends StatelessWidget {
+  const TodayDetailsScreen({super.key});
+
+  static const purple = Color(0xFF6D35E8);
+  static const blue = Color(0xFF1773EA);
+  static const green = Color(0xFF35B54B);
+  static const orange = Color(0xFFFF9813);
+  static const background = Color(0xFFF7F8FC);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            const SliverToBoxAdapter(child: _Header()),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 110),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const _CaloriesCard(),
+                  const SizedBox(height: 16),
+                  const _MacrosCard(),
+                  const SizedBox(height: 16),
+                  const _OtherNutrientsCard(),
+                  const SizedBox(height: 16),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 680) {
+                        return const Column(
+                          children: [
+                            _CaloriesByMealCard(),
+                            SizedBox(height: 16),
+                            _HydrationCard(),
+                          ],
+                        );
+                      }
+                      return const Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _CaloriesByMealCard()),
+                          SizedBox(width: 16),
+                          Expanded(child: _HydrationCard()),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const _RemainingBudgetCard(),
+                  const SizedBox(height: 16),
+                  const _InsightCard(),
+                ]),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: const _BottomActions(),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        8,
+        MediaQuery.paddingOf(context).top + 4,
+        8,
+        18,
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 52,
+            child: Row(
+              children: [
+                IconButton(
+                  tooltip: 'Back',
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(CupertinoIcons.back, size: 29),
+                ),
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      "Today's Details",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Calendar',
+                  onPressed: () {},
+                  icon: const Icon(CupertinoIcons.calendar, size: 26),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(CupertinoIcons.chevron_left, size: 20),
+              SizedBox(width: 16),
+              Icon(CupertinoIcons.calendar, size: 20, color: Color(0xFF424852)),
+              SizedBox(width: 10),
+              Flexible(
+                child: Text(
+                  'Sunday, 23 August',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: Color(0xFF565D68),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Icon(CupertinoIcons.chevron_right, size: 20),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Card extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  const _Card({required this.child, this.padding = const EdgeInsets.all(22)});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x15000000),
+            blurRadius: 22,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+class _CaloriesCard extends StatelessWidget {
+  const _CaloriesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      padding: const EdgeInsets.fromLTRB(24, 22, 16, 22),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 560;
+          final summary = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Calories',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 12),
+              const FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '1,200',
+                        style: TextStyle(
+                          fontSize: 46,
+                          height: 1,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF111318),
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' / 1,800 kcal',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Color(0xFF606773),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 9),
+              const Text(
+                '600 kcal remaining',
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w600,
+                  color: TodayDetailsScreen.purple,
+                ),
+              ),
+              const SizedBox(height: 19),
+              const _ProgressBar(
+                value: 1200 / 1800,
+                color: TodayDetailsScreen.purple,
+              ),
+              const SizedBox(height: 9),
+              const Text(
+                '67% of daily goal',
+                style: TextStyle(fontSize: 15, color: Color(0xFF616874)),
+              ),
+              const SizedBox(height: 24),
+              const Row(
+                children: [
+                  Expanded(
+                    child: _Metric(label: 'Consumed', value: '1,200 kcal'),
+                  ),
+                  _Divider(),
+                  Expanded(
+                    child: _Metric(label: 'Goal', value: '1,800 kcal'),
+                  ),
+                  _Divider(),
+                  Expanded(
+                    child: _Metric(
+                      label: 'Remaining',
+                      value: '600 kcal',
+                      color: TodayDetailsScreen.purple,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+          final ring = const SizedBox(
+            width: 190,
+            height: 190,
+            child: CustomPaint(
+              painter: _RingPainter(),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _FireIcon(),
+                    SizedBox(height: 6),
+                    Text(
+                      '67%',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      'of goal',
+                      style: TextStyle(fontSize: 14, color: Color(0xFF6A707A)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+          return compact
+              ? Column(children: [summary, const SizedBox(height: 20), ring])
+              : Row(
+                  children: [
+                    Expanded(child: summary),
+                    const SizedBox(width: 14),
+                    ring,
+                  ],
+                );
+        },
+      ),
+    );
+  }
+}
+
+class _Metric extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? color;
+
+  const _Metric({required this.label, required this.value, this.color});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(fontSize: 14, color: Color(0xFF414852)),
+      ),
+      const SizedBox(height: 5),
+      FittedBox(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          value,
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: color ?? const Color(0xFF15191F),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    height: 42,
+    width: 1,
+    margin: const EdgeInsets.symmetric(horizontal: 9),
+    color: const Color(0xFFE3E6EC),
+  );
+}
+
+class _FireIcon extends StatelessWidget {
+  const _FireIcon();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 54,
+    height: 54,
+    decoration: const BoxDecoration(
+      color: Color(0xFFFFF0EC),
+      shape: BoxShape.circle,
+    ),
+    child: const Icon(
+      Icons.local_fire_department_rounded,
+      color: Color(0xFFFF725E),
+      size: 30,
+    ),
+  );
+}
+
+class _ProgressBar extends StatelessWidget {
+  final double value;
+  final Color color;
+
+  const _ProgressBar({required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(100),
+    child: SizedBox(
+      height: 10,
+      child: LinearProgressIndicator(
+        value: value,
+        backgroundColor: const Color(0xFFE2E5EB),
+        color: color,
+      ),
+    ),
+  );
+}
+
+class _MacrosCard extends StatelessWidget {
+  const _MacrosCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    child: Column(
+      children: [
+        const Row(
+          children: [
+            Text(
+              'Macronutrients',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+            ),
+            Spacer(),
+            Text(
+              'View targets',
+              style: TextStyle(
+                fontSize: 16,
+                color: TodayDetailsScreen.purple,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Icon(
+              CupertinoIcons.chevron_right,
+              size: 18,
+              color: TodayDetailsScreen.purple,
+            ),
+          ],
+        ),
+        const SizedBox(height: 23),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final items = const [
+              _MacroData(
+                'Protein',
+                '85 / 130 g',
+                '65%',
+                '45 g remaining',
+                .65,
+                TodayDetailsScreen.green,
+                Icons.fitness_center_rounded,
+              ),
+              _MacroData(
+                'Carbs',
+                '120 / 180 g',
+                '67%',
+                '60 g remaining',
+                .67,
+                TodayDetailsScreen.blue,
+                Icons.grain_rounded,
+              ),
+              _MacroData(
+                'Fat',
+                '40 / 60 g',
+                '67%',
+                '20 g remaining',
+                .67,
+                TodayDetailsScreen.orange,
+                Icons.water_drop_outlined,
+              ),
+            ];
+            return constraints.maxWidth < 530
+                ? Column(
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0) const Divider(height: 25),
+                        _MacroItem(data: items[i]),
+                      ],
+                    ],
+                  )
+                : Row(
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0) const _MacroDivider(),
+                        Expanded(child: _MacroItem(data: items[i])),
+                      ],
+                    ],
+                  );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+class _MacroData {
+  final String title, value, percent, remaining;
+  final double progress;
+  final Color color;
+  final IconData icon;
+
+  const _MacroData(
+    this.title,
+    this.value,
+    this.percent,
+    this.remaining,
+    this.progress,
+    this.color,
+    this.icon,
+  );
+}
+
+class _MacroItem extends StatelessWidget {
+  final _MacroData data;
+
+  const _MacroItem({required this.data});
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        data.title,
+        style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
+      ),
+      const SizedBox(height: 7),
+      Row(
+        children: [
+          Expanded(
+            child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.scaleDown,
+              child: Text(
+                data.value,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: data.color.withOpacity(.11),
+            ),
+            child: Icon(data.icon, color: data.color, size: 25),
+          ),
+        ],
+      ),
+      const SizedBox(height: 4),
+      Text(
+        data.percent,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: data.color,
+        ),
+      ),
+      const SizedBox(height: 13),
+      _ProgressBar(value: data.progress, color: data.color),
+      const SizedBox(height: 11),
+      Text(
+        data.remaining,
+        style: const TextStyle(fontSize: 13.5, color: Color(0xFF757B85)),
+      ),
+    ],
+  );
+}
+
+class _MacroDivider extends StatelessWidget {
+  const _MacroDivider();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 1,
+    height: 155,
+    margin: const EdgeInsets.symmetric(horizontal: 13),
+    color: const Color(0xFFE4E6EC),
+  );
+}
+
+class _OtherNutrientsCard extends StatelessWidget {
+  const _OtherNutrientsCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    padding: const EdgeInsets.fromLTRB(24, 22, 16, 12),
+    child: Column(
+      children: [
+        const Row(
+          children: [
+            Text(
+              'Other Nutrients',
+              style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+            ),
+            Spacer(),
+            Text(
+              'Learn more',
+              style: TextStyle(fontSize: 16, color: TodayDetailsScreen.purple),
+            ),
+            Icon(
+              CupertinoIcons.chevron_right,
+              size: 18,
+              color: TodayDetailsScreen.purple,
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        for (final nutrient in const [
+          (
+            'Fiber',
+            '18 / 30 g',
+            .60,
+            TodayDetailsScreen.green,
+            Icons.spa_outlined,
+            'Good',
+          ),
+          (
+            'Sugar',
+            '42 / 50 g',
+            .84,
+            TodayDetailsScreen.purple,
+            Icons.hexagon_outlined,
+            'Moderate',
+          ),
+          (
+            'Saturated Fat',
+            '12 / 20 g',
+            .60,
+            Color(0xFF7042F1),
+            Icons.water_drop_outlined,
+            'Moderate',
+          ),
+          (
+            'Sodium',
+            '1,450 / 2,300 mg',
+            .63,
+            TodayDetailsScreen.blue,
+            Icons.science_outlined,
+            'Good',
+          ),
+        ]) ...[_NutrientRow(nutrient: nutrient), const Divider(height: 1)],
+      ],
+    ),
+  );
+}
+
+class _NutrientRow extends StatelessWidget {
+  final (String, String, double, Color, IconData, String) nutrient;
+
+  const _NutrientRow({required this.nutrient});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 9),
+    child: Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: nutrient.$4.withOpacity(.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(nutrient.$5, size: 18, color: nutrient.$4),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          flex: 2,
+          child: Text(
+            nutrient.$1,
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: _ProgressBar(value: nutrient.$3, color: nutrient.$4),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            nutrient.$2,
+            textAlign: TextAlign.right,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Container(
+          width: 76,
+          padding: const EdgeInsets.symmetric(vertical: 7),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: nutrient.$6 == 'Good'
+                ? const Color(0xFFEFF9F0)
+                : const Color(0xFFFFF6E6),
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Text(
+            nutrient.$6,
+            style: TextStyle(
+              fontSize: 12,
+              color: nutrient.$6 == 'Good'
+                  ? TodayDetailsScreen.green
+                  : TodayDetailsScreen.orange,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _CaloriesByMealCard extends StatelessWidget {
+  const _CaloriesByMealCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Calories by Meal',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            const SizedBox(
+              width: 110,
+              height: 110,
+              child: CustomPaint(painter: _DonutPainter()),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                children: [
+                  _Legend(Color(0xFF49B94E), 'Breakfast', '420 kcal'),
+                  SizedBox(height: 12),
+                  _Legend(Color(0xFF2B72DD), 'Lunch', '620 kcal'),
+                  SizedBox(height: 12),
+                  _Legend(Color(0xFFFF9917), 'Snack', '160 kcal'),
+                  SizedBox(height: 12),
+                  _Legend(Color(0xFF8C47E5), 'Dinner', '0 kcal'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const Divider(height: 28),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total',
+              style: TextStyle(fontSize: 17, color: Color(0xFF5B626D)),
+            ),
+            Text(
+              '1,200 kcal',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class _Legend extends StatelessWidget {
+  final Color color;
+  final String label, value;
+
+  const _Legend(this.color, this.label, this.value);
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Container(
+        width: 8,
+        height: 8,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      ),
+      const SizedBox(width: 7),
+      Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
+      Text(
+        value,
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+      ),
+    ],
+  );
+}
+
+class _HydrationCard extends StatelessWidget {
+  const _HydrationCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Hydration',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 20),
+        const Row(
+          children: [
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: Color(0xFFF0F6FF),
+              child: Icon(
+                Icons.water_drop_outlined,
+                size: 34,
+                color: TodayDetailsScreen.blue,
+              ),
+            ),
+            SizedBox(width: 15),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '1.4',
+                    style: TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF111419),
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' / 2.5 L',
+                    style: TextStyle(fontSize: 21, color: Color(0xFF4E5661)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const _ProgressBar(value: 1.4 / 2.5, color: TodayDetailsScreen.blue),
+        const SizedBox(height: 8),
+        const Text(
+          '1.1 L remaining',
+          style: TextStyle(
+            color: TodayDetailsScreen.blue,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 17),
+        Wrap(
+          spacing: 7,
+          runSpacing: 7,
+          children: const [
+            _WaterAction('+250 ml'),
+            _WaterAction('+500 ml'),
+            _WaterAction('+1 L'),
+            _WaterAction('Log Water'),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class _WaterAction extends StatelessWidget {
+  final String label;
+
+  const _WaterAction(this.label);
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 82,
+    height: 66,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F6FF),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.local_drink_outlined,
+            size: 24,
+            color: TodayDetailsScreen.blue,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: TodayDetailsScreen.blue,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _RemainingBudgetCard extends StatelessWidget {
+  const _RemainingBudgetCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Remaining Budget',
+          style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: const [
+            _BudgetBox(
+              '600',
+              'kcal',
+              Icons.local_fire_department_rounded,
+              Color(0xFFFF725E),
+            ),
+            _BudgetBox(
+              '45 g',
+              'protein',
+              Icons.fitness_center_rounded,
+              TodayDetailsScreen.green,
+            ),
+            _BudgetBox(
+              '60 g',
+              'carbs',
+              Icons.grain_rounded,
+              TodayDetailsScreen.blue,
+            ),
+            _BudgetBox(
+              '20 g',
+              'fat',
+              Icons.water_drop_outlined,
+              TodayDetailsScreen.orange,
+            ),
+            _BudgetBox(
+              '1.1 L',
+              'water',
+              Icons.water_drop_outlined,
+              TodayDetailsScreen.blue,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFF8F1FF), Color(0xFFF0E8FF)],
+            ),
+          ),
+          child: const Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Color(0xFFE5D6FF),
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: TodayDetailsScreen.purple,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Suggested next meal',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'You can still have a ~500-600 kcal dinner.',
+                      style: TextStyle(fontSize: 14, color: Color(0xFF50465A)),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(CupertinoIcons.chevron_right, color: Color(0xFF482777)),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _BudgetBox extends StatelessWidget {
+  final String value, label;
+  final IconData icon;
+  final Color color;
+
+  const _BudgetBox(this.value, this.label, this.icon, this.color);
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 145,
+    height: 72,
+    child: Container(
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E5EB)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 23),
+          const SizedBox(width: 7),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  color: Color(0xFF626973),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+class _InsightCard extends StatelessWidget {
+  const _InsightCard();
+
+  @override
+  Widget build(BuildContext context) => _Card(
+    child: const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    color: TodayDetailsScreen.purple,
+                    size: 24,
+                  ),
+                  SizedBox(width: 9),
+                  Text(
+                    "Today's Insight",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              Text(
+                "You're doing well on calories, but you're still 45g short on protein. Consider a high-protein dinner.",
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.38,
+                  color: Color(0xFF2A3037),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 12),
+        Icon(
+          Icons.bar_chart_rounded,
+          color: TodayDetailsScreen.green,
+          size: 52,
+        ),
+      ],
+    ),
+  );
+}
+
+class _BottomActions extends StatelessWidget {
+  const _BottomActions();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    color: TodayDetailsScreen.background,
+    padding: EdgeInsets.fromLTRB(
+      16,
+      10,
+      16,
+      12 + MediaQuery.paddingOf(context).bottom,
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: _ActionButton(
+            label: 'Add Food',
+            icon: Icons.add,
+            filled: true,
+            onTap: () {},
+          ),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: _ActionButton(
+            label: 'Log Water',
+            icon: Icons.water_drop_outlined,
+            onTap: () {},
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.filled = false,
+  });
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: filled ? TodayDetailsScreen.purple : Colors.white,
+    borderRadius: BorderRadius.circular(34),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(34),
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: filled ? Colors.white : TodayDetailsScreen.purple,
+              size: 26,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: filled ? Colors.white : TodayDetailsScreen.purple,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _RingPainter extends CustomPainter {
+  const _RingPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = math.min(size.width, size.height) / 2 - 7;
+    final background = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10
+      ..color = const Color(0xFFE8EAF0);
+    final foreground = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10
+      ..strokeCap = StrokeCap.round
+      ..color = TodayDetailsScreen.purple;
+    canvas.drawCircle(center, radius, background);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      math.pi * 2 * .67,
+      false,
+      foreground,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _DonutPainter extends CustomPainter {
+  const _DonutPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = math.min(size.width, size.height) / 2 - 9;
+    var start = -math.pi / 2;
+    for (final segment in const [
+      (0.35, Color(0xFF49B94E)),
+      (0.52, Color(0xFF2B72DD)),
+      (0.13, Color(0xFFFF9917)),
+    ]) {
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 18
+        ..color = segment.$2;
+      final sweep = segment.$1 * math.pi * 2;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        start,
+        sweep,
+        false,
+        paint,
+      );
+      start += sweep;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}

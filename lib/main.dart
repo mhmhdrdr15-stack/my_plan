@@ -9,6 +9,8 @@ import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
 import 'settings_screen.dart';
+import 'snack_details_screen.dart';
+import 'today_details_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -353,7 +355,13 @@ class TodayProgressCard extends StatelessWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const TodayDetailsScreen(),
+                    ),
+                  );
+                },
                 child: Row(
                   children: [
                     Text(
@@ -1117,7 +1125,7 @@ class NextMealCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const MealDetailsScreen()),
+          MaterialPageRoute<void>(builder: (_) => const SnackDetailsScreen()),
         );
       },
       borderRadius: BorderRadius.circular(20),
@@ -1162,7 +1170,7 @@ class NextMealCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    translateText(context, 'Lunch'),
+                    translateText(context, 'Snack'),
                     style: TextStyle(
                       color: AppColors.text,
                       fontSize: 17,
@@ -1173,7 +1181,7 @@ class NextMealCard extends StatelessWidget {
                   Text(
                     translateText(
                       context,
-                      '2:00 PM  •  620 kcal  •  52g protein',
+                      '5:30 PM  •  200 kcal  •  5g protein',
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
