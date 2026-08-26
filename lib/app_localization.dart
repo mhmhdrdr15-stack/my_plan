@@ -214,13 +214,13 @@ const Map<String, String> _arabicTranslations = {
   '52g protein': '52 جرام بروتين',
   '5g protein': '5 جرام بروتين',
   '40g protein': '40 جرام بروتين',
-    '52g protein  |  6g fat  |  0g carbs':
+  '52g protein  |  6g fat  |  0g carbs':
       '52 جرام بروتين | 6 جرام دهون | 0 جرام كربوهيدرات',
-    '4g protein  |  0.4g fat  |  42g carbs':
+  '4g protein  |  0.4g fat  |  42g carbs':
       '4 جرام بروتين | 0.4 جرام دهون | 42 جرام كربوهيدرات',
-    '2g protein  |  4g fat  |  6g carbs':
+  '2g protein  |  4g fat  |  6g carbs':
       '2 جرام بروتين | 4 جرام دهون | 6 جرام كربوهيدرات',
-    '0g protein  |  10g fat  |  0g carbs':
+  '0g protein  |  10g fat  |  0g carbs':
       '0 جرام بروتين | 10 جرام دهون | 0 جرام كربوهيدرات',
   'Mon': 'الإثنين',
   'Tue': 'الثلاثاء',
@@ -270,6 +270,29 @@ class AppLanguageScope extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF5B35F5),
               brightness: Brightness.light,
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFFF7F8FC),
+              foregroundColor: Color(0xFF17203A),
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              centerTitle: true,
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              filled: true,
+              fillColor: Color(0xFFF1F2F6),
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF5B35F5), width: 1.2),
+                borderRadius: BorderRadius.all(Radius.circular(14)),
+              ),
             ),
           ),
           builder: (context, child) {

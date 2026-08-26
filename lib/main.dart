@@ -103,7 +103,6 @@ class _AppShellState extends State<AppShell> {
             selectTab(index);
           },
         ),
-        transitionDuration: const Duration(milliseconds: 160),
         reverseTransitionDuration: const Duration(milliseconds: 120),
         transitionsBuilder: (_, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -924,14 +923,13 @@ class FoodMiniIcon extends StatelessWidget {
         color: const Color(0xFFF7F7FB),
         shape: BoxShape.circle,
       ),
-      child: ClipOval(
-        child: Image.network(
-          imageUrl,
-          cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) =>
-              Icon(icon, color: color, size: size * .55),
-        ),
+      child: AppNetworkImage(
+        url: imageUrl,
+        fallback: icon,
+        width: size,
+        height: size,
+        radius: size / 2,
+        fit: BoxFit.cover,
       ),
     );
   }

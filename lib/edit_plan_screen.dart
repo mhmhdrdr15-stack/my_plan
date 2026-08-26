@@ -40,7 +40,6 @@ class EditPlanScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const _EditPlanNav(),
           ],
         ),
       ),
@@ -291,6 +290,18 @@ class _MealCard extends StatelessWidget {
   final _Meal meal;
   const _MealCard({required this.meal});
 
+  String get imageUrl => switch (meal.title) {
+    'Breakfast' =>
+      'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=240&q=80',
+    'Lunch' =>
+      'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=240&q=80',
+    'Snack' =>
+      'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=240&q=80',
+    'Dinner' =>
+      'https://images.unsplash.com/photo-1547592180-85f173990554?w=240&q=80',
+    _ => '',
+  };
+
   @override
   Widget build(BuildContext context) => AppCard(
     padding: const EdgeInsets.fromLTRB(10, 10, 10, 9),
@@ -309,14 +320,12 @@ class _MealCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 7),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: meal.background,
-          ),
-          child: Icon(meal.icon, color: const Color(0xFF5B35F5), size: 22),
+        AppNetworkImage(
+          url: imageUrl,
+          fallback: meal.icon,
+          width: 48,
+          height: 48,
+          radius: 14,
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -403,43 +412,175 @@ class _PlanSummaryCard extends StatelessWidget {
   const _PlanSummaryCard();
   @override
   Widget build(BuildContext context) => AppCard(
-    padding: const EdgeInsets.fromLTRB(12, 11, 12, 10),
+    padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Today's Plan Summary",
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        Row(
+          children: [
+            const Expanded(
+              child: Text(
+                "Today's Plan Summary",
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              ),
+            ),
+            _SummaryLegend(color: const Color(0xFF6938EF), label: 'Planned'),
+            const SizedBox(width: 13),
+            _SummaryLegend(color: const Color(0xFFBFC3CD), label: 'Target'),
+          ],
         ),
-        const SizedBox(height: 10),
-        for (final item in const [
-          ('🔥', 'Calories', '1,690', '1,800 kcal'),
-          ('💪', 'Protein', '125', '130 g'),
-          ('🌾', 'Carbs', '175', '180 g'),
-          ('💧', 'Fat', '58', '60 g'),
-        ])
-          Padding(
-            padding: const EdgeInsets.only(bottom: 7),
-            child: Row(
+        const SizedBox(height: 9),
+        const _SummaryRow(
+          icon: '🔥',
+          label: 'Calories',
+          value: '1,690',
+          unit: 'kcal',
+          target: '1,800 kcal',
+          progress: .94,
+          color: Color(0xFF6938EF),
+        ),
+        const _SummaryRow(
+          icon: '💪',
+          label: 'Protein',
+          value: '125',
+          unit: 'g',
+          target: '130 g',
+          progress: .96,
+          color: Color(0xFF2CAE62),
+        ),
+        const _SummaryRow(
+          icon: '🌾',
+          label: 'Carbs',
+          value: '175',
+          unit: 'g',
+          target: '180 g',
+          progress: .97,
+          color: Color(0xFF4478FF),
+        ),
+        const _SummaryRow(
+          icon: '💧',
+          label: 'Fat',
+          value: '58',
+          unit: 'g',
+          target: '60 g',
+          progress: .97,
+          color: Color(0xFFFF7900),
+        ),
+      ],
+    ),
+  );
+}
+
+class _SummaryLegend extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _SummaryLegend({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
+  );
+}
+
+class _SummaryRow extends StatelessWidget {
+  final String icon;
+  final String label;
+  final String value;
+  final String unit;
+  final String target;
+  final double progress;
+  final Color color;
+
+  const _SummaryRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.target,
+    required this.progress,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 25,
+          child: Text(icon, style: const TextStyle(fontSize: 15)),
+        ),
+        SizedBox(
+          width: 67,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: 25, child: Text(item.$1)),
-                SizedBox(
-                  width: 70,
-                  child: Text(item.$2, style: TextStyle(fontSize: 11)),
-                ),
-                Expanded(
-                  child: Text(
-                    item.$3,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                RichText(
+                  text: TextSpan(
+                    text: value,
+                    style: const TextStyle(
+                      color: Color(0xFF17203A),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: ' $unit',
+                        style: const TextStyle(
+                          color: Color(0xFF667085),
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  item.$4,
-                  style: TextStyle(fontSize: 11, color: Color(0xFF667085)),
+                const SizedBox(height: 3),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 4,
+                    color: color,
+                    backgroundColor: const Color(0xFFE1E4EA),
+                  ),
                 ),
               ],
             ),
           ),
+        ),
+        SizedBox(
+          width: 76,
+          child: Text(
+            target,
+            textAlign: TextAlign.right,
+            style: const TextStyle(color: Color(0xFF667085), fontSize: 10.5),
+          ),
+        ),
       ],
     ),
   );
@@ -450,40 +591,38 @@ class _SaveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
     width: double.infinity,
-    height: 50,
-    child: FilledButton(
-      onPressed: () => Navigator.of(context).pop(),
-      style: FilledButton.styleFrom(
-        backgroundColor: const Color(0xFF5B35F5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      ),
-      child: const Text(
-        'Save Changes',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      ),
-    ),
-  );
-}
-
-class _EditPlanNav extends StatelessWidget {
-  const _EditPlanNav();
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 72,
-    color: Colors.white,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: const [
-        Icon(Icons.home_outlined, color: Color(0xFF667085), size: 26),
-        Icon(Icons.calendar_month_outlined, color: Color(0xFF667085), size: 26),
-        CircleAvatar(
-          radius: 24,
-          backgroundColor: Color(0xFF5B35F5),
-          child: Icon(Icons.add, color: Colors.white, size: 28),
+    height: 52,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6E30E8), Color(0xFF6330E6)],
         ),
-        Icon(Icons.bar_chart_rounded, color: Color(0xFF667085), size: 26),
-        Icon(Icons.grid_view_rounded, color: Color(0xFF667085), size: 26),
-      ],
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x286E30E8),
+            blurRadius: 12,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.of(context).pop(),
+          borderRadius: BorderRadius.circular(15),
+          child: const Center(
+            child: Text(
+              'Save Changes',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ),
     ),
   );
 }

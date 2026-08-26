@@ -1,12 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'app_bottom_nav.dart';
 import 'app_localization.dart';
-import 'log_screen.dart';
-import 'plan_screen.dart';
-import 'progress_screen.dart';
 import 'reusable_widgets.dart';
 
 class MealDetailsScreen extends StatefulWidget {
@@ -33,7 +28,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
         child: Stack(
           children: [
             ListView(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 120),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
               children: [
                 _topBar(),
                 const SizedBox(height: 12),
@@ -53,33 +48,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: 0,
-        onItemSelected: _navigateTo,
-        onAdd: _openAddFood,
-      ),
     );
-  }
-
-  void _openAddFood() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => const AddFoodScreen()));
-  }
-
-  void _navigateTo(int index) {
-    if (index == 0) return;
-    final destination = switch (index) {
-      1 => const PlanScreen(),
-      2 => const LogFoodScreen(),
-      3 => const ProgressScreen(),
-      _ => null,
-    };
-    if (destination != null) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => destination));
-    }
   }
 
   Widget _topBar() {

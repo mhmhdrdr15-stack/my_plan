@@ -2,11 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'app_bottom_nav.dart';
-import 'log_screen.dart';
-import 'plan_screen.dart';
-import 'progress_screen.dart';
 import 'reusable_widgets.dart';
 
 class SnackDetailsScreen extends StatelessWidget {
@@ -32,7 +27,7 @@ class SnackDetailsScreen extends StatelessWidget {
           slivers: [
             const SliverToBoxAdapter(child: _SnackHeader()),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   const _SnackOverview(),
@@ -55,29 +50,6 @@ class SnackDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: AppBottomNav(
-        currentIndex: 0,
-        onItemSelected: (index) {
-          if (index == 0) {
-            Navigator.of(context).pop();
-            return;
-          }
-          final destination = switch (index) {
-            1 => const PlanScreen(),
-            2 => const LogFoodScreen(),
-            3 => const ProgressScreen(),
-            _ => null,
-          };
-          if (destination != null) {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute<void>(builder: (_) => destination));
-          }
-        },
-        onAdd: () => Navigator.of(
-          context,
-        ).push(MaterialPageRoute<void>(builder: (_) => const AddFoodScreen())),
       ),
     );
   }

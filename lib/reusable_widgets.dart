@@ -27,6 +27,7 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: borderRadius,
+        border: Border.all(color: const Color(0xFFEEF0F4)),
         boxShadow: boxShadow,
       ),
       child: child,
@@ -52,6 +53,19 @@ class AppNetworkImage extends StatelessWidget {
     this.fit = BoxFit.cover,
   });
 
+  String? get localFallback {
+    if (url.contains('1532550907401')) return 'assets/food/chicken.jpg';
+    if (url.contains('1512058564366')) return 'assets/food/rice.jpg';
+    if (url.contains('1525351484163')) return 'assets/food/egg.jpg';
+    if (url.contains('1568702846914') || url.contains('1560806887')) {
+      return 'assets/food/apple.jpg';
+    }
+    if (url.contains('1490645935967') || url.contains('1547592180')) {
+      return 'assets/food/salad.jpg';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cacheWidth = width.isFinite
@@ -65,11 +79,15 @@ class AppNetworkImage extends StatelessWidget {
         height: height,
         fit: fit,
         cacheWidth: cacheWidth,
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded || frame != null) return child;
-          return const ColoredBox(
-            color: Color(0xFFF1F2F6),
-            child: Center(
+        gaplessPlayback: true,
+        filterQuality: FilterQuality.medium,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: width,
+            height: height,
+            color: const Color(0xFFF1F2F6),
+            child: const Center(
               child: SizedBox(
                 width: 18,
                 height: 18,
@@ -78,12 +96,17 @@ class AppNetworkImage extends StatelessWidget {
             ),
           );
         },
-        errorBuilder: (context, error, stackTrace) => Container(
-          width: width,
-          height: height,
-          color: const Color(0xFFF1F2F6),
-          child: Icon(fallback, color: const Color(0xFF77819A)),
-        ),
+        errorBuilder: (context, error, stackTrace) {
+          final asset = localFallback;
+          return Container(
+            width: width,
+            height: height,
+            color: const Color(0xFFF1F2F6),
+            child: asset == null
+                ? Icon(fallback, color: const Color(0xFF77819A))
+                : Image.asset(asset, width: width, height: height, fit: fit),
+          );
+        },
       ),
     );
   }
