@@ -5,6 +5,8 @@ import 'add_food_screen.dart';
 import 'app_bottom_nav.dart';
 import 'app_localization.dart';
 import 'app_state.dart';
+import 'widgets/log_sync_button.dart';
+import 'screens/log/food_log_history_page.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
@@ -100,9 +102,48 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
                 const SizedBox(height: 24),
                 AnimatedBuilder(
                   animation: appState,
-                  builder: (context, _) => _sectionHeader(
-                    'Logged Today',
-                    '${appState.loggedFoods} ${translateText(context, 'items')}  |  1,610 Kcal',
+                  builder: (context, _) => Row(
+                    children: [
+                      const Text(
+                        'Logged Today',
+                        style: TextStyle(
+                          color: Color(0xFF17203A),
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        '${appState.loggedFoods} ${translateText(context, 'items')}  |  1,610 Kcal',
+                        style: const TextStyle(
+                          color: secondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: _openFoodLogHistory,
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color(0xFF5B35F5),
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: const Row(
+                          children: [
+                            Text(
+                              'See all',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            SizedBox(width: 2),
+                            Icon(Icons.chevron_right_rounded, size: 18),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -132,6 +173,18 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => const AddFoodScreen()));
+  }
+
+  Future<void> _syncLog() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _openFoodLogHistory() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const FoodLogHistoryPage()));
   }
 
   void _navigateTo(int index) {
@@ -175,6 +228,8 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
             ],
           ),
         ),
+        LogSyncButton(onSync: _syncLog),
+        const SizedBox(width: 7),
         IconButton(
           onPressed: () {},
           icon: const Icon(Icons.history_rounded, size: 28, color: dark),
@@ -356,7 +411,11 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
     );
   }
 
-  Widget _sectionHeader(String title, String trailing) {
+  Widget _sectionHeader(
+    String title,
+    String trailing, [
+    VoidCallback? onTrailing,
+  ]) {
     return Row(
       children: [
         Expanded(
@@ -369,14 +428,31 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
             ),
           ),
         ),
-        Text(
-          translateText(context, trailing),
-          style: const TextStyle(
-            color: secondary,
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        onTrailing == null
+            ? Text(
+                translateText(context, trailing),
+                style: const TextStyle(
+                  color: secondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            : TextButton(
+                onPressed: onTrailing,
+                style: TextButton.styleFrom(
+                  foregroundColor: secondary,
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  translateText(context, trailing),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
       ],
     );
   }

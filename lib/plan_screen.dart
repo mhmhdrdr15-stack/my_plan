@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'add_food_screen.dart';
+import 'add_meal_snack_sheet.dart';
 import 'app_bottom_nav.dart';
 import 'app_localization.dart';
 import 'log_screen.dart';
@@ -10,6 +11,28 @@ import 'edit_daily_targets_page.dart';
 import 'plan_header_actions.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
+
+enum MealStatus { planned, logged, skipped, overdue }
+
+class PlannedMeal {
+  final String id;
+  String name;
+  String time;
+  MealStatus status;
+  List<String> foodIds;
+  int calories;
+  int protein;
+
+  PlannedMeal({
+    required this.id,
+    required this.name,
+    required this.time,
+    required this.status,
+    required this.foodIds,
+    required this.calories,
+    required this.protein,
+  });
+}
 
 class PlanScreen extends StatefulWidget {
   final bool showBottomNav;
@@ -27,9 +50,15 @@ class PlanScreen extends StatefulWidget {
 
 class _PlanScreenState extends State<PlanScreen> {
   int selectedDay = 4;
-  int selectedTab = 0;
+  int selectedTab = 1;
   DateTime selectedDate = DateTime.now();
   bool hasPlan = true;
+  int dailyCalories = 1800;
+  int dailyProtein = 130;
+  int dailyCarbs = 180;
+  int dailyFat = 60;
+  double dailyWater = 2.5;
+  final List<PlannedMeal> meals = [];
 
   static const purple = Color(0xFF5B36F4);
   static const text = Color(0xFF13182B);
@@ -122,6 +151,19 @@ class _PlanScreenState extends State<PlanScreen> {
                       kcal: '450 kcal',
                       protein: '40g protein',
                     ),
+                    for (final meal in meals)
+                      _timelineMeal(
+                        time: meal.time.split(' ').first,
+                        period: meal.time.split(' ').last,
+                        icon: Icons.restaurant_outlined,
+                        accent: purple,
+                        imageUrl:
+                            'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=80',
+                        title: meal.name,
+                        details: const [],
+                        kcal: '${meal.calories} kcal',
+                        protein: '${meal.protein}g protein',
+                      ),
                     const SizedBox(height: 8),
                     _addMealButton(),
                     const SizedBox(height: 18),
@@ -149,6 +191,45 @@ class _PlanScreenState extends State<PlanScreen> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => const AddFoodScreen()));
+  }
+
+  void addMealOrSnack() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => AddMealSnackSheet(
+        onContinue: (mealType, time) {
+          Navigator.pop(context);
+          createNewMeal(mealType: mealType, time: time);
+        },
+      ),
+    );
+  }
+
+  void createNewMeal({required String mealType, required TimeOfDay time}) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final suffix = time.period == DayPeriod.am ? 'AM' : 'PM';
+    final formattedTime = '$hour:$minute $suffix';
+    final id =
+        '${mealType.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}';
+
+    setState(() {
+      meals.add(
+        PlannedMeal(
+          id: id,
+          name: mealType,
+          time: formattedTime,
+          status: MealStatus.planned,
+          foodIds: [],
+          calories: 0,
+          protein: 0,
+        ),
+      );
+    });
+
+    _showPlanMessage('$mealType created. Now add food.');
   }
 
   void _navigateTo(int index) {
@@ -289,133 +370,98 @@ class _PlanScreenState extends State<PlanScreen> {
 
   Widget _dailyTargets() {
     return _card(
-      padding: const EdgeInsets.fromLTRB(14, 16, 14, 14),
+      padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              const Text(
+                'Daily Target',
+                style: TextStyle(
+                  color: Color(0xFF17203A),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: () async {
+                  final result = await Navigator.of(context).push<DailyTargets>(
+                    MaterialPageRoute<DailyTargets>(
+                      builder: (_) => EditDailyTargetsPage(
+                        initialCalories: dailyCalories,
+                        initialProtein: dailyProtein,
+                        initialCarbs: dailyCarbs,
+                        initialFat: dailyFat,
+                        initialWater: dailyWater,
+                      ),
+                    ),
+                  );
+
+                  if (result != null && mounted) {
+                    setState(() {
+                      dailyCalories = result.calories;
+                      dailyProtein = result.protein;
+                      dailyCarbs = result.carbs;
+                      dailyFat = result.fat;
+                      dailyWater = result.water;
+                    });
+                  }
+                },
+                icon: const Icon(Icons.edit_outlined, size: 15),
+                label: const Text('Edit Target'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Color(0xFF5B35F5),
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
-                child: Text(
-                  widget.editMode ? 'Planned Nutrition' : 'Daily Targets',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: text,
-                  ),
+                child: TargetValue(
+                  icon: Icons.local_fire_department_rounded,
+                  color: const Color(0xFFFF8A16),
+                  value: '$dailyCalories',
+                  unit: 'kcal',
+                  label: 'Calories',
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const EditDailyTargetsPage(),
-                    ),
-                  );
-                },
-                child: Text(
-                  translateText(context, 'Edit'),
-                  style: const TextStyle(color: purple),
+              Expanded(
+                child: TargetValue(
+                  icon: Icons.favorite_rounded,
+                  color: const Color(0xFFFF3E4B),
+                  value: '$dailyProtein',
+                  unit: 'g',
+                  label: 'Protein',
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _target(
-                '🔥',
-                'Calories',
-                '1,800',
-                'kcal',
-                .69,
-                const Color(0xFFFF7B19),
+              Expanded(
+                child: TargetValue(
+                  icon: Icons.rice_bowl_rounded,
+                  color: const Color(0xFF467BFF),
+                  value: '$dailyCarbs',
+                  unit: 'g',
+                  label: 'Carbs',
+                ),
               ),
-              _divider(),
-              _target(
-                '🥩',
-                'Protein',
-                '130',
-                'g',
-                .64,
-                const Color(0xFFFF383E),
+              Expanded(
+                child: TargetValue(
+                  icon: Icons.eco_rounded,
+                  color: const Color(0xFF2DAA61),
+                  value: '$dailyFat',
+                  unit: 'g',
+                  label: 'Fat',
+                ),
               ),
-              _divider(),
-              _target('🍚', 'Carbs', '180', 'g', .66, const Color(0xFF397BFF)),
-              _divider(),
-              _target('🥑', 'Fats', '60', 'g', .66, const Color(0xFF40B46B)),
-              _divider(),
-              _target('💧', 'Water', '2.5', 'L', .68, const Color(0xFF4C9AF4)),
             ],
           ),
         ],
       ),
     );
   }
-
-  Widget _target(
-    String emoji,
-    String label,
-    String value,
-    String unit,
-    double progress,
-    Color color,
-  ) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: .10),
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(emoji, style: const TextStyle(fontSize: 17)),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            translateText(context, label),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 9,
-              color: text,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 13,
-              color: text,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(unit, style: const TextStyle(fontSize: 9, color: secondary)),
-          const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 4,
-              color: color,
-              backgroundColor: const Color(0xFFE9ECF2),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _divider() => Container(
-    width: 1,
-    height: 75,
-    color: const Color(0xFFE8EAF0),
-    margin: const EdgeInsets.symmetric(horizontal: 5),
-  );
 
   Widget _tabs() {
     return Row(
@@ -614,34 +660,38 @@ class _PlanScreenState extends State<PlanScreen> {
   );
 
   Widget _addMealButton() {
-    return CustomPaint(
-      painter: _DashedRRectPainter(
-        color: const Color(0xFF7A63F9),
-        radius: 12,
-        dash: 7,
-        gap: 5,
-      ),
-      child: SizedBox(
-        height: 52,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 13,
-                backgroundColor: purple,
-                child: Icon(Icons.add, color: Colors.white, size: 19),
-              ),
-              SizedBox(width: 8),
-              Text(
-                translateText(context, 'Add Meal / Snack'),
-                style: TextStyle(
-                  fontSize: 15,
-                  color: purple,
-                  fontWeight: FontWeight.w600,
+    return InkWell(
+      onTap: addMealOrSnack,
+      borderRadius: BorderRadius.circular(12),
+      child: CustomPaint(
+        painter: _DashedRRectPainter(
+          color: const Color(0xFF7A63F9),
+          radius: 12,
+          dash: 7,
+          gap: 5,
+        ),
+        child: SizedBox(
+          height: 52,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 13,
+                  backgroundColor: purple,
+                  child: Icon(Icons.add, color: Colors.white, size: 19),
                 ),
-              ),
-            ],
+                SizedBox(width: 8),
+                Text(
+                  translateText(context, 'Add Meal / Snack'),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: purple,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -836,6 +886,60 @@ class _PlanScreenState extends State<PlanScreen> {
       ),
       padding: padding,
       child: child,
+    );
+  }
+}
+
+class TargetValue extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String value;
+  final String unit;
+  final String label;
+
+  const TargetValue({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.value,
+    required this.unit,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: .10),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Color(0xFF17203A),
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        Text(
+          unit,
+          style: const TextStyle(color: Color(0xFF64708E), fontSize: 9),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Color(0xFF9AA2B5), fontSize: 9),
+        ),
+      ],
     );
   }
 }
