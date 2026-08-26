@@ -94,83 +94,13 @@ class _PlanScreenState extends State<PlanScreen> {
                       const SizedBox(height: 20),
                       _tabs(),
                     ],
-                    const SizedBox(height: 18),
-                    _mealsHeader(),
-                    const SizedBox(height: 14),
-                    _timelineMeal(
-                      time: '08:00',
-                      period: 'AM',
-                      icon: Icons.egg_alt_outlined,
-                      accent: const Color(0xFFFFB11A),
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80',
-                      title: 'Breakfast',
-                      details: const ['Egg 100g', 'Bread 60g'],
-                      kcal: '420 kcal',
-                      protein: '28g protein',
-                    ),
-                    _timelineMeal(
-                      time: '02:00',
-                      period: 'PM',
-                      icon: Icons.restaurant_outlined,
-                      accent: const Color(0xFFFF9F81),
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=500&q=80',
-                      title: 'Lunch',
-                      details: const [
-                        'Chicken 200g',
-                        'Rice 150g',
-                        'Salad 100g',
-                        'Oil 10g',
-                      ],
-                      kcal: '620 kcal',
-                      protein: '52g protein',
-                      compact: true,
-                    ),
-                    _timelineMeal(
-                      time: '05:30',
-                      period: 'PM',
-                      icon: Icons.apple_rounded,
-                      accent: const Color(0xFF8D63FF),
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500&q=80',
-                      title: 'Snack',
-                      details: const ['Apple 150g', 'Almonds 20g'],
-                      kcal: '200 kcal',
-                      protein: '5g protein',
-                    ),
-                    _timelineMeal(
-                      time: '08:30',
-                      period: 'PM',
-                      icon: Icons.energy_savings_leaf_outlined,
-                      accent: const Color(0xFF73C99A),
-                      imageUrl:
-                          'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&q=80',
-                      title: 'Dinner',
-                      details: const ['Tuna 120g', 'Bread 80g'],
-                      kcal: '450 kcal',
-                      protein: '40g protein',
-                    ),
-                    for (final meal in meals)
-                      _timelineMeal(
-                        time: meal.time.split(' ').first,
-                        period: meal.time.split(' ').last,
-                        icon: Icons.restaurant_outlined,
-                        accent: purple,
-                        imageUrl:
-                            'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=80',
-                        title: meal.name,
-                        details: const [],
-                        kcal: '${meal.calories} kcal',
-                        protein: '${meal.protein}g protein',
-                      ),
-                    const SizedBox(height: 8),
-                    _addMealButton(),
-                    const SizedBox(height: 18),
-                    _nutritionSummary(),
-                    const SizedBox(height: 16),
-                    _tipCard(),
-                    const SizedBox(height: 18),
+                    if (selectedTab == 0 || widget.editMode) ...[
+                      const SizedBox(height: 18),
+                      _mealPlanContent(),
+                    ] else ...[
+                      const SizedBox(height: 18),
+                      _foodListContent(),
+                    ],
                   ],
                 ),
               ),
@@ -184,6 +114,169 @@ class _PlanScreenState extends State<PlanScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _mealPlanContent() {
+    return Column(
+      children: [
+        _mealsHeader(),
+        const SizedBox(height: 14),
+        _timelineMeal(
+          time: '08:00',
+          period: 'AM',
+          icon: Icons.egg_alt_outlined,
+          accent: const Color(0xFFFFB11A),
+          imageUrl:
+              'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80',
+          title: 'Breakfast',
+          details: const ['Egg 100g', 'Bread 60g'],
+          kcal: '420 kcal',
+          protein: '28g protein',
+        ),
+        _timelineMeal(
+          time: '02:00',
+          period: 'PM',
+          icon: Icons.restaurant_outlined,
+          accent: const Color(0xFFFF9F81),
+          imageUrl:
+              'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=500&q=80',
+          title: 'Lunch',
+          details: const ['Chicken 200g', 'Rice 150g', 'Salad 100g', 'Oil 10g'],
+          kcal: '620 kcal',
+          protein: '52g protein',
+          compact: true,
+        ),
+        _timelineMeal(
+          time: '05:30',
+          period: 'PM',
+          icon: Icons.apple_rounded,
+          accent: const Color(0xFF8D63FF),
+          imageUrl:
+              'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500&q=80',
+          title: 'Snack',
+          details: const ['Apple 150g', 'Almonds 20g'],
+          kcal: '200 kcal',
+          protein: '5g protein',
+        ),
+        _timelineMeal(
+          time: '08:30',
+          period: 'PM',
+          icon: Icons.energy_savings_leaf_outlined,
+          accent: const Color(0xFF73C99A),
+          imageUrl:
+              'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&q=80',
+          title: 'Dinner',
+          details: const ['Tuna 120g', 'Bread 80g'],
+          kcal: '450 kcal',
+          protein: '40g protein',
+        ),
+        for (final meal in meals)
+          _timelineMeal(
+            time: meal.time.split(' ').first,
+            period: meal.time.split(' ').last,
+            icon: Icons.restaurant_outlined,
+            accent: purple,
+            imageUrl:
+                'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&q=80',
+            title: meal.name,
+            details: const [],
+            kcal: '${meal.calories} kcal',
+            protein: '${meal.protein}g protein',
+          ),
+        const SizedBox(height: 8),
+        _addMealButton(),
+        const SizedBox(height: 18),
+        _nutritionSummary(),
+        const SizedBox(height: 16),
+        _tipCard(),
+      ],
+    );
+  }
+
+  Widget _foodListContent() {
+    const foods = [
+      ('Egg', 'Breakfast', '100 g', '143 kcal', Icons.egg_alt_rounded),
+      ('Bread', 'Breakfast', '60 g', '150 kcal', Icons.bakery_dining_rounded),
+      ('Chicken', 'Lunch', '200 g', '330 kcal', Icons.restaurant_rounded),
+      ('Rice', 'Lunch', '150 g', '195 kcal', Icons.rice_bowl_rounded),
+      ('Salad', 'Lunch', '100 g', '35 kcal', Icons.eco_rounded),
+      ('Apple', 'Snack', '150 g', '78 kcal', Icons.apple_rounded),
+      ('Almonds', 'Snack', '20 g', '120 kcal', Icons.spa_rounded),
+      ('Tuna', 'Dinner', '120 g', '140 kcal', Icons.set_meal_rounded),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Planned Foods',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: text,
+                ),
+              ),
+            ),
+            Text(
+              '${foods.length} items',
+              style: TextStyle(fontSize: 12, color: secondary),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          decoration: InputDecoration(
+            hintText: 'Search planned food...',
+            prefixIcon: const Icon(Icons.search_rounded),
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _card(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: Column(
+            children: [
+              for (final food in foods)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: CircleAvatar(
+                    backgroundColor: purple.withValues(alpha: .10),
+                    child: Icon(food.$5, color: purple, size: 19),
+                  ),
+                  title: Text(
+                    food.$1,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${food.$2} • ${food.$3}',
+                    style: TextStyle(color: secondary, fontSize: 11),
+                  ),
+                  trailing: Text(
+                    food.$4,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        _addMealButton(),
+      ],
     );
   }
 

@@ -51,6 +51,17 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
     );
   }
 
+  void _showComingSoon(String action) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('$action is coming soon'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   Widget _topBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,11 +72,14 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
         ),
         Row(
           children: [
-            _iconButton(Icons.edit_outlined, () {}),
+            _iconButton(Icons.edit_outlined, () => _showComingSoon('Edit')),
             const SizedBox(width: 10),
-            _iconButton(Icons.copy_rounded, () {}),
+            _iconButton(Icons.copy_rounded, () => _showComingSoon('Duplicate')),
             const SizedBox(width: 10),
-            _iconButton(Icons.more_horiz_rounded, () {}),
+            _iconButton(
+              Icons.more_horiz_rounded,
+              () => _showComingSoon('More'),
+            ),
           ],
         ),
       ],
@@ -470,7 +484,14 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3),
         child: InkWell(
-          onTap: () {},
+          onTap: () => ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text('$label is coming soon'),
+                behavior: SnackBarBehavior.floating,
+              ),
+            ),
           borderRadius: BorderRadius.circular(14),
           child: Container(
             height: 82,

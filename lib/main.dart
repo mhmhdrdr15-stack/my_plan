@@ -159,25 +159,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
                     sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        const HeaderSection(),
-                        const SizedBox(height: 14),
-                        const TodayProgressCard(),
-                        const SizedBox(height: 12),
-                        AnimatedBuilder(
-                          animation: appState,
-                          builder: (context, _) => InsightWaterSection(
-                            water: appState.water,
-                            waterGoal: appState.waterGoal,
-                            onAddWater: addWater,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const NextMealCard(),
-                        const SizedBox(height: 12),
-                        const TodayPlanCard(),
-                        const SizedBox(height: 92),
-                      ]),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        if (index == 0) return const HeaderSection();
+                        if (index == 1) return const SizedBox(height: 14);
+                        if (index == 2) return const TodayProgressCard();
+                        if (index == 3) return const SizedBox(height: 12);
+                        if (index == 4) {
+                          return AnimatedBuilder(
+                            animation: appState,
+                            builder: (context, _) => InsightWaterSection(
+                              water: appState.water,
+                              waterGoal: appState.waterGoal,
+                              onAddWater: addWater,
+                            ),
+                          );
+                        }
+                        if (index == 5) return const SizedBox(height: 12);
+                        if (index == 6) return const NextMealCard();
+                        if (index == 7) return const SizedBox(height: 12);
+                        if (index == 8) return const TodayPlanCard();
+                        return const SizedBox(height: 92);
+                      }, childCount: 10),
                     ),
                   ),
                 ],
@@ -418,7 +420,14 @@ class TodayProgressCard extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(12),
-              onTap: () {},
+              onTap: () => ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Nutrient details are coming soon'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -879,7 +888,14 @@ class InsightCard extends StatelessWidget {
             height: 36,
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () => ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Suggestions are coming soon'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: const BorderSide(color: Color(0xFFE1D9FF)),

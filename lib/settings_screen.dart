@@ -295,7 +295,14 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () => ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Premium plan preview is coming soon'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              ),
             child: Text(
               translateText(context, 'View Plan'),
               style: TextStyle(color: primary, fontWeight: FontWeight.w700),
@@ -399,13 +406,11 @@ class _SettingData {
   final IconData icon;
   final String title;
   final String subtitle;
-  final String? trailing;
   final bool danger;
   const _SettingData(
     this.icon,
     this.title,
     this.subtitle, {
-    this.trailing,
     this.danger = false,
   });
 }
@@ -470,15 +475,6 @@ class _SettingRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (item.trailing != null)
-              Text(
-                translateText(context, item.trailing!),
-                style: const TextStyle(
-                  color: SettingsScreen.primary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             const SizedBox(width: 7),
             const Icon(
               Icons.chevron_right_rounded,

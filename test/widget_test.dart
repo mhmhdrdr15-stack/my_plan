@@ -92,6 +92,22 @@ void main() {
     expect(find.byKey(const ValueKey('app-nav-0')), findsOneWidget);
   });
 
+  testWidgets('opens the food log history from the log screen header action', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.tap(find.byKey(const ValueKey('app-nav-2')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Log Food'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('History'));
+    await tester.pumpAndSettle();
+    expect(find.text('Food Log History'), findsOneWidget);
+  });
+
   testWidgets('persists a food entry and toggles language', (
     WidgetTester tester,
   ) async {

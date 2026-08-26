@@ -151,7 +151,11 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
                 const SizedBox(height: 14),
                 _addFoodButton(),
                 const SizedBox(height: 25),
-                _sectionHeader('Suggestions for you', 'See all'),
+                _sectionHeader(
+                  'Suggestions for you',
+                  'See all',
+                  _openFoodLogHistory,
+                ),
                 const SizedBox(height: 12),
                 _suggestionList(),
               ],
@@ -231,7 +235,7 @@ class _LogFoodScreenState extends State<LogFoodScreen> {
         LogSyncButton(onSync: _syncLog),
         const SizedBox(width: 7),
         IconButton(
-          onPressed: () {},
+          onPressed: _openFoodLogHistory,
           icon: const Icon(Icons.history_rounded, size: 28, color: dark),
           tooltip: translateText(context, 'History'),
         ),

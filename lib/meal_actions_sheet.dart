@@ -119,7 +119,7 @@ class _MealActionsBottomSheet extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: status.color.withOpacity(.10),
+                  color: status.color.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(status.icon, color: status.color, size: 25),
@@ -358,7 +358,7 @@ class _ActionItem extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: color.withOpacity(.09),
+              color: color.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(icon, color: color, size: 21),
@@ -407,7 +407,7 @@ class _StatusPill extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     decoration: BoxDecoration(
-      color: status.color.withOpacity(.10),
+      color: status.color.withValues(alpha: 0.10),
       borderRadius: BorderRadius.circular(16),
     ),
     child: Text(

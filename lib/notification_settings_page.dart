@@ -242,7 +242,7 @@ class SettingsSwitchTile extends StatelessWidget {
           width: 42,
           height: 42,
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(.09),
+            color: iconColor.withValues(alpha: 0.09),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: iconColor, size: 21),
@@ -277,7 +277,8 @@ class SettingsSwitchTile extends StatelessWidget {
         ),
         Switch.adaptive(
           value: value,
-          activeColor: const Color(0xFF5B35F5),
+          activeThumbColor: const Color(0xFF5B35F5),
+          activeTrackColor: const Color(0xFF5B35F5).withValues(alpha: 0.35),
           onChanged: onChanged,
         ),
       ],

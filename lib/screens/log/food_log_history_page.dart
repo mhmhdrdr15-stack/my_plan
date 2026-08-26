@@ -311,7 +311,7 @@ class _FoodLogHistoryPageState extends State<FoodLogHistoryPage> {
           width: 31,
           height: 31,
           decoration: BoxDecoration(
-            color: color.withOpacity(.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 16),
@@ -361,7 +361,7 @@ class _FoodLogHistoryPageState extends State<FoodLogHistoryPage> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: filters.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 7),
+        separatorBuilder: (_, _) => const SizedBox(width: 7),
         itemBuilder: (_, index) {
           final filter = filters[index];
           final active = selectedFilter == filter;

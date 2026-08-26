@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'add_food_screen.dart';
 import 'reusable_widgets.dart';
 
 class EditBreakfastPage extends StatefulWidget {
@@ -253,7 +254,11 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
                   width: double.infinity,
                   height: 44,
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AddFoodScreen(),
+                      ),
+                    ),
                     icon: const Icon(Icons.add_rounded),
                     label: const Text(
                       'Add Food',
@@ -472,7 +477,7 @@ class _FoodEditRow extends StatelessWidget {
             width: 48,
             height: 48,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => _IconBox(
+            errorBuilder: (_, _, _) => _IconBox(
               icon: food.icon,
               color: food.color,
               size: 48,
@@ -658,7 +663,7 @@ class _IconBox extends StatelessWidget {
     width: size,
     height: size,
     decoration: BoxDecoration(
-      color: color.withOpacity(.12),
+      color: color.withValues(alpha: 0.12),
       borderRadius: BorderRadius.circular(radius),
     ),
     child: Icon(icon, color: color, size: size * .52),
@@ -763,7 +768,7 @@ class _StatusOption extends StatelessWidget {
     child: Container(
       height: 44,
       decoration: BoxDecoration(
-        color: active ? color.withOpacity(.09) : const Color(0xFFF8F9FC),
+        color: active ? color.withValues(alpha: 0.09) : const Color(0xFFF8F9FC),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: active ? color : const Color(0xFFEEF0F5)),
       ),
@@ -802,7 +807,7 @@ class _MiniStat extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: color.withOpacity(.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

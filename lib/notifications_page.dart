@@ -271,7 +271,7 @@ class NotificationCard extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(.10),
+                  color: color.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(notification.type.icon, color: color, size: 22),

@@ -29,23 +29,32 @@ class SnackDetailsScreen extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
               sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const _SnackOverview(),
-                  const SizedBox(height: 12),
-                  const _FoodsCard(),
-                  const SizedBox(height: 12),
-                  const _NutritionCard(),
-                  const SizedBox(height: 12),
-                  const _ImpactCard(),
-                  const SizedBox(height: 12),
-                  _PrimaryButton(
-                    icon: Icons.check_circle_outline,
-                    label: 'Log Meal',
-                    onTap: () {},
-                  ),
-                  const SizedBox(height: 14),
-                  const _EditSkipButtons(),
-                ]),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == 0) return const _SnackOverview();
+                  if (index == 1) return const SizedBox(height: 12);
+                  if (index == 2) return const _FoodsCard();
+                  if (index == 3) return const SizedBox(height: 12);
+                  if (index == 4) return const _NutritionCard();
+                  if (index == 5) return const SizedBox(height: 12);
+                  if (index == 6) return const _ImpactCard();
+                  if (index == 7) return const SizedBox(height: 12);
+                  if (index == 8) {
+                    return _PrimaryButton(
+                      icon: Icons.check_circle_outline,
+                      label: 'Log Meal',
+                      onTap: () => ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          const SnackBar(
+                            content: Text('Meal logging is coming soon'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        ),
+                    );
+                  }
+                  if (index == 9) return const SizedBox(height: 14);
+                  return const _EditSkipButtons();
+                }, childCount: 11),
               ),
             ),
           ],
@@ -101,7 +110,14 @@ class _SnackHeader extends StatelessWidget {
               ),
               IconButton(
                 tooltip: 'More',
-                onPressed: () {},
+                onPressed: () => ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    const SnackBar(
+                      content: Text('More actions are coming soon'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  ),
                 icon: const Icon(CupertinoIcons.ellipsis, size: 24),
               ),
             ],
@@ -830,7 +846,14 @@ class _SecondaryButton extends StatelessWidget {
       elevation: 1,
       shadowColor: const Color(0x16000000),
       child: InkWell(
-        onTap: () {},
+        onTap: () => ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text('$label is coming soon'),
+              behavior: SnackBarBehavior.floating,
+            ),
+          ),
         borderRadius: BorderRadius.circular(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

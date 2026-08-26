@@ -14,9 +14,16 @@ class AppState extends ChangeNotifier {
 
   Future<void> load() async {
     _preferences = await SharedPreferences.getInstance();
-    water = _preferences?.getDouble(_waterKey) ?? water;
-    locale = Locale(_preferences?.getString(_localeKey) ?? 'ar');
-    loggedFoods = _preferences?.getInt(_loggedFoodsKey) ?? loggedFoods;
+
+    final savedWater = _preferences?.getDouble(_waterKey);
+    if (savedWater != null) water = savedWater;
+
+    final savedLocale = _preferences?.getString(_localeKey);
+    if (savedLocale != null) locale = Locale(savedLocale);
+
+    final savedLoggedFoods = _preferences?.getInt(_loggedFoodsKey);
+    if (savedLoggedFoods != null) loggedFoods = savedLoggedFoods;
+
     notifyListeners();
   }
 

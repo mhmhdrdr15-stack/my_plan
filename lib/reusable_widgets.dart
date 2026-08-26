@@ -36,6 +36,16 @@ class AppCard extends StatelessWidget {
 }
 
 class AppNetworkImage extends StatelessWidget {
+  static const Map<String, String> _fallbackAssetMap = {
+    '1532550907401': 'assets/food/chicken.jpg',
+    '1512058564366': 'assets/food/rice.jpg',
+    '1525351484163': 'assets/food/egg.jpg',
+    '1568702846914': 'assets/food/apple.jpg',
+    '1560806887': 'assets/food/apple.jpg',
+    '1490645935967': 'assets/food/salad.jpg',
+    '1547592180': 'assets/food/salad.jpg',
+  };
+
   final String url;
   final IconData fallback;
   final double width;
@@ -53,58 +63,32 @@ class AppNetworkImage extends StatelessWidget {
     this.fit = BoxFit.cover,
   });
 
-  String? get localFallback {
-    if (url.contains('1532550907401')) return 'assets/food/chicken.jpg';
-    if (url.contains('1512058564366')) return 'assets/food/rice.jpg';
-    if (url.contains('1525351484163')) return 'assets/food/egg.jpg';
-    if (url.contains('1568702846914') || url.contains('1560806887')) {
-      return 'assets/food/apple.jpg';
+  String get localFallback {
+    for (final entry in _fallbackAssetMap.entries) {
+      if (url.contains(entry.key)) {
+        return entry.value;
+      }
     }
-    if (url.contains('1490645935967') || url.contains('1547592180')) {
-      return 'assets/food/salad.jpg';
-    }
-    return null;
+    return 'assets/food/bread.jpg';
   }
 
   @override
   Widget build(BuildContext context) {
-    final cacheWidth = width.isFinite
-        ? (width * MediaQuery.devicePixelRatioOf(context)).round()
-        : null;
+    final asset = localFallback;
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
-      child: Image.network(
-        url,
+      child: Image.asset(
+        asset,
         width: width,
         height: height,
         fit: fit,
-        cacheWidth: cacheWidth,
-        gaplessPlayback: true,
         filterQuality: FilterQuality.medium,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            width: width,
-            height: height,
-            color: const Color(0xFFF1F2F6),
-            child: const Center(
-              child: SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-          );
-        },
         errorBuilder: (context, error, stackTrace) {
-          final asset = localFallback;
           return Container(
             width: width,
             height: height,
             color: const Color(0xFFF1F2F6),
-            child: asset == null
-                ? Icon(fallback, color: const Color(0xFF77819A))
-                : Image.asset(asset, width: width, height: height, fit: fit),
+            child: Icon(fallback, color: const Color(0xFF77819A)),
           );
         },
       ),

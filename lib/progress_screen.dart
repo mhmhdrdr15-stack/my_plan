@@ -25,6 +25,17 @@ class _ProgressScreenState extends State<ProgressScreen> {
   int selectedTab = 0;
   int selectedRange = 0;
 
+  void _showComingSoon(String feature) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('$feature is coming soon'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,12 +53,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => _showComingSoon('Calendar'),
             icon: const Icon(Icons.calendar_month_outlined, color: dark),
             tooltip: translateText(context, 'Calendar'),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => _showComingSoon('Filters'),
             icon: const Icon(Icons.tune_rounded, color: primary),
             tooltip: translateText(context, 'Filters'),
           ),

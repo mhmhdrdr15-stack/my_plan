@@ -415,7 +415,7 @@ class TargetEditor extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(.10),
+                color: iconColor.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: iconColor, size: 21),
@@ -534,7 +534,7 @@ class ModeSelector extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: active
-                  ? TargetColors.primary.withOpacity(.10)
+                  ? TargetColors.primary.withValues(alpha: 0.10)
                   : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),

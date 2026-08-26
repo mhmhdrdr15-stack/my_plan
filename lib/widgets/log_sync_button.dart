@@ -84,10 +84,11 @@ class _LogSyncButtonState extends State<LogSyncButton>
           ),
         );
     } finally {
-      if (!mounted) return;
-      _controller.stop();
-      _controller.reset();
-      setState(() => isSyncing = false);
+      if (mounted) {
+        _controller.stop();
+        _controller.reset();
+        setState(() => isSyncing = false);
+      }
     }
   }
 

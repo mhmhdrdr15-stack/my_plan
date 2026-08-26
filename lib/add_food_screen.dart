@@ -83,6 +83,17 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     super.dispose();
   }
 
+  void _showComingSoon(String feature) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('$feature is coming soon'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
   List<_Food> get filteredFoods {
     if (query.trim().isEmpty) return foods;
     final text = query.toLowerCase();
@@ -180,7 +191,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
           ),
         ),
         TextButton.icon(
-          onPressed: () {},
+          onPressed: () => _showComingSoon('Scan'),
           icon: const Icon(Icons.barcode_reader, size: 20),
           label: Text(
             translateText(context, 'Scan'),
@@ -240,7 +251,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3),
             child: InkWell(
-              onTap: () {},
+              onTap: () => _showComingSoon(action.$2),
               borderRadius: BorderRadius.circular(15),
               child: Container(
                 height: 84,
@@ -325,7 +336,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         _sectionTitle(
           translateText(context, 'Your Favorites'),
           translateText(context, 'See all'),
-          () {},
+          () => _showComingSoon('Favorites'),
         ),
         const SizedBox(height: 12),
         SizedBox(

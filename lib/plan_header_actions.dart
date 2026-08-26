@@ -290,7 +290,7 @@ class PlanActionTile extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: color.withOpacity(.09),
+              color: color.withValues(alpha: 0.09),
               borderRadius: BorderRadius.circular(13),
             ),
             child: Icon(icon, color: color, size: 21),

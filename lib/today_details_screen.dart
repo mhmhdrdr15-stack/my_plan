@@ -26,41 +26,43 @@ class TodayDetailsScreen extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 110),
               sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  const _CaloriesCard(),
-                  const SizedBox(height: 16),
-                  const _MacrosCard(),
-                  const SizedBox(height: 16),
-                  const _OtherNutrientsCard(),
-                  const SizedBox(height: 16),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      if (constraints.maxWidth < 300) {
-                        return const Column(
-                          children: [
-                            _CaloriesByMealCard(),
-                            SizedBox(height: 16),
-                            _HydrationCard(),
-                          ],
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == 0) return const _CaloriesCard();
+                  if (index == 1) return const SizedBox(height: 16);
+                  if (index == 2) return const _MacrosCard();
+                  if (index == 3) return const SizedBox(height: 16);
+                  if (index == 4) return const _OtherNutrientsCard();
+                  if (index == 5) return const SizedBox(height: 16);
+                  if (index == 6) {
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth < 300) {
+                          return const Column(
+                            children: [
+                              _CaloriesByMealCard(),
+                              SizedBox(height: 16),
+                              _HydrationCard(),
+                            ],
+                          );
+                        }
+                        return const IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(child: _CaloriesByMealCard()),
+                              SizedBox(width: 16),
+                              Expanded(child: _HydrationCard()),
+                            ],
+                          ),
                         );
-                      }
-                      return const IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(child: _CaloriesByMealCard()),
-                            SizedBox(width: 16),
-                            Expanded(child: _HydrationCard()),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  const _RemainingBudgetCard(),
-                  const SizedBox(height: 16),
-                  const _InsightCard(),
-                ]),
+                      },
+                    );
+                  }
+                  if (index == 7) return const SizedBox(height: 16);
+                  if (index == 8) return const _RemainingBudgetCard();
+                  if (index == 9) return const SizedBox(height: 16);
+                  return const _InsightCard();
+                }, childCount: 11),
               ),
             ),
           ],
@@ -107,7 +109,14 @@ class _Header extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: 'Calendar',
-                  onPressed: () {},
+                  onPressed: () => ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text('Calendar is coming soon'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    ),
                   icon: const Icon(CupertinoIcons.calendar, size: 22),
                 ),
               ],
@@ -1135,7 +1144,14 @@ class _BottomActions extends StatelessWidget {
             label: 'Add Food',
             icon: Icons.add,
             filled: true,
-            onTap: () {},
+            onTap: () => ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Add Food is coming soon'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              ),
           ),
         ),
         const SizedBox(width: 8),
@@ -1143,7 +1159,14 @@ class _BottomActions extends StatelessWidget {
           child: _ActionButton(
             label: 'Log Water',
             icon: Icons.water_drop_outlined,
-            onTap: () {},
+            onTap: () => ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Log Water is coming soon'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              ),
           ),
         ),
       ],
