@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'edit_breakfast_page.dart';
 import 'reusable_widgets.dart';
 
+class EditTodayPlanPage extends StatelessWidget {
+  const EditTodayPlanPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => const EditPlanScreen();
+}
+
 class EditPlanScreen extends StatelessWidget {
   const EditPlanScreen({super.key});
 

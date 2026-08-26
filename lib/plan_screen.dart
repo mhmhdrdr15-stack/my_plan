@@ -5,6 +5,9 @@ import 'add_food_screen.dart';
 import 'app_bottom_nav.dart';
 import 'app_localization.dart';
 import 'log_screen.dart';
+import 'edit_plan_screen.dart';
+import 'edit_daily_targets_page.dart';
+import 'plan_header_actions.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
 
@@ -25,6 +28,8 @@ class PlanScreen extends StatefulWidget {
 class _PlanScreenState extends State<PlanScreen> {
   int selectedDay = 4;
   int selectedTab = 0;
+  DateTime selectedDate = DateTime.now();
+  bool hasPlan = true;
 
   static const purple = Color(0xFF5B36F4);
   static const text = Color(0xFF13182B);
@@ -161,46 +166,48 @@ class _PlanScreenState extends State<PlanScreen> {
   }
 
   Widget _header() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-          tooltip: translateText(context, 'Back'),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                widget.editMode ? "Edit Today's Plan" : 'Plan',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (!widget.editMode)
-                Text(
-                  translateText(context, 'Plan your meals. Stay on track.'),
-                  style: TextStyle(fontSize: 16, color: secondary),
-                ),
-            ],
-          ),
-        ),
-        TextButton(
-          onPressed: () {},
-          child: const Text(
-            'Save',
-            style: TextStyle(
-              color: purple,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
+    return PlanPageHeader(
+      selectedDate: selectedDate,
+      hasPlan: hasPlan,
+      onDateChanged: (date) => setState(() => selectedDate = date),
+      onEditPlan: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const EditTodayPlanPage()),
+      ),
+      onCopyPlan: () => _showPlanMessage('Plan copied.'),
+      onApplyToAnotherDay: () => PlanDialogs.showChooseTargetDay(
+        context,
+        onSelected: (date) =>
+            _showPlanMessage('Plan applied to ${date.day}/${date.month}.'),
+      ),
+      onResetPlan: () => PlanDialogs.showResetConfirmation(
+        context,
+        onConfirm: () => _showPlanMessage('Plan reset.'),
+      ),
+      onClearPlan: () => PlanDialogs.showClearConfirmation(
+        context,
+        onConfirm: () {
+          setState(() => hasPlan = false);
+          _showPlanMessage("Today's plan cleared.");
+        },
+      ),
+      onCreatePlan: () {
+        setState(() => hasPlan = true);
+        _showPlanMessage("Today's plan created.");
+      },
+      onCopyFromAnotherDay: () => PlanDialogs.showChooseSourceDay(
+        context,
+        onSelected: (date) {
+          setState(() => hasPlan = true);
+          _showPlanMessage('Plan copied from ${date.day}/${date.month}.');
+        },
+      ),
     );
+  }
+
+  void _showPlanMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   Widget _dateSelector() {
@@ -299,7 +306,13 @@ class _PlanScreenState extends State<PlanScreen> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const EditDailyTargetsPage(),
+                    ),
+                  );
+                },
                 child: Text(
                   translateText(context, 'Edit'),
                   style: const TextStyle(color: purple),
