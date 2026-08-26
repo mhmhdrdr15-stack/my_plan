@@ -7,14 +7,15 @@ import 'app_bottom_nav.dart';
 import 'log_screen.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
+import 'reusable_widgets.dart';
 
 class SnackDetailsScreen extends StatelessWidget {
   const SnackDetailsScreen({super.key});
 
-  static const purple = Color(0xFF6D35E8);
-  static const blue = Color(0xFF2376E8);
-  static const green = Color(0xFF3BAF4A);
-  static const orange = Color(0xFFFF9416);
+  static const purple = Color(0xFF5B35F5);
+  static const blue = Color(0xFF4478FF);
+  static const green = Color(0xFF2CAE62);
+  static const orange = Color(0xFFFF7900);
   static const pink = Color(0xFFE73572);
   static const text = Color(0xFF111827);
   static const secondary = Color(0xFF626976);
@@ -31,17 +32,17 @@ class SnackDetailsScreen extends StatelessWidget {
           slivers: [
             const SliverToBoxAdapter(child: _SnackHeader()),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   const _SnackOverview(),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
                   const _FoodsCard(),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
                   const _NutritionCard(),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
                   const _ImpactCard(),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
                   _PrimaryButton(
                     icon: Icons.check_circle_outline,
                     label: 'Log Meal',
@@ -90,7 +91,7 @@ class _SnackHeader extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         8,
-        MediaQuery.paddingOf(context).top + 4,
+        MediaQuery.paddingOf(context).top + 2,
         8,
         0,
       ),
@@ -101,7 +102,7 @@ class _SnackHeader extends StatelessWidget {
               IconButton(
                 tooltip: 'Back',
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(CupertinoIcons.back, size: 29),
+                icon: const Icon(CupertinoIcons.back, size: 24),
               ),
               const Expanded(
                 child: Column(
@@ -109,7 +110,7 @@ class _SnackHeader extends StatelessWidget {
                     Text(
                       'Snack',
                       style: TextStyle(
-                        fontSize: 29,
+                        fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: SnackDetailsScreen.text,
                       ),
@@ -118,7 +119,7 @@ class _SnackHeader extends StatelessWidget {
                     Text(
                       '5:30 PM',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 14,
                         color: SnackDetailsScreen.secondary,
                         fontWeight: FontWeight.w500,
                       ),
@@ -129,16 +130,16 @@ class _SnackHeader extends StatelessWidget {
               IconButton(
                 tooltip: 'More',
                 onPressed: () {},
-                icon: const Icon(CupertinoIcons.ellipsis, size: 30),
+                icon: const Icon(CupertinoIcons.ellipsis, size: 24),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
             decoration: BoxDecoration(
               color: const Color(0xFFF0E8FF),
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(18),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
@@ -152,7 +153,7 @@ class _SnackHeader extends StatelessWidget {
                 Text(
                   'Planned',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 12,
                     color: SnackDetailsScreen.purple,
                     fontWeight: FontWeight.w600,
                   ),
@@ -168,20 +169,21 @@ class _SnackHeader extends StatelessWidget {
 
 class _Card extends StatelessWidget {
   final Widget child;
+  final double radius;
 
-  const _Card({required this.child});
+  const _Card({required this.child, this.radius = 20});
 
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
-    padding: const EdgeInsets.all(22),
+    padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x15000000),
-          blurRadius: 22,
+          color: Color(0x0D0D1020),
+          blurRadius: 18,
           offset: Offset(0, 6),
         ),
       ],
@@ -199,13 +201,13 @@ class _SnackOverview extends StatelessWidget {
       children: [
         LayoutBuilder(
           builder: (context, constraints) {
-            final image = const SizedBox(
-              width: 210,
-              height: 170,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(30)),
-                child: CustomPaint(painter: _FoodPainter()),
-              ),
+            final image = const AppNetworkImage(
+              url:
+                  'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=640&q=85',
+              fallback: Icons.restaurant_rounded,
+              width: 132,
+              height: 106,
+              radius: 16,
             );
             final title = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,20 +215,20 @@ class _SnackOverview extends StatelessWidget {
                 const Text(
                   'Snack',
                   style: TextStyle(
-                    fontSize: 39,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: SnackDetailsScreen.text,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 const Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(text: '🔥  ', style: TextStyle(fontSize: 28)),
+                      TextSpan(text: '🔥  ', style: TextStyle(fontSize: 18)),
                       TextSpan(
                         text: '200',
                         style: TextStyle(
-                          fontSize: 42,
+                          fontSize: 28,
                           fontWeight: FontWeight.w700,
                           color: SnackDetailsScreen.purple,
                         ),
@@ -234,7 +236,7 @@ class _SnackOverview extends StatelessWidget {
                       TextSpan(
                         text: ' kcal',
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: SnackDetailsScreen.purple,
                         ),
@@ -244,61 +246,61 @@ class _SnackOverview extends StatelessWidget {
                 ),
               ],
             );
-            return constraints.maxWidth < 500
-                ? Column(children: [title, const SizedBox(height: 18), image])
-                : Row(
-                    children: [
-                      Expanded(child: title),
-                      const SizedBox(width: 12),
-                      image,
-                    ],
-                  );
+            final macros = const Row(
+              children: [
+                Expanded(
+                  child: _MacroStat(
+                    Icons.fitness_center_rounded,
+                    '5 g',
+                    'Protein',
+                    SnackDetailsScreen.green,
+                  ),
+                ),
+                _MacroLine(),
+                Expanded(
+                  child: _MacroStat(
+                    Icons.grain_rounded,
+                    '25 g',
+                    'Carbs',
+                    SnackDetailsScreen.blue,
+                  ),
+                ),
+                _MacroLine(),
+                Expanded(
+                  child: _MacroStat(
+                    Icons.water_drop_outlined,
+                    '8 g',
+                    'Fat',
+                    SnackDetailsScreen.orange,
+                  ),
+                ),
+              ],
+            );
+            final details = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title,
+                const SizedBox(height: 10),
+                macros,
+                const SizedBox(height: 10),
+                const _InfoText(CupertinoIcons.clock, 'Planned for 5:30 PM'),
+                const SizedBox(height: 5),
+                const _InfoText(
+                  CupertinoIcons.bolt,
+                  '600 kcal remaining',
+                  accent: SnackDetailsScreen.purple,
+                ),
+              ],
+            );
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: details),
+                const SizedBox(width: 10),
+                image,
+              ],
+            );
           },
-        ),
-        const SizedBox(height: 20),
-        const Row(
-          children: [
-            Expanded(
-              child: _MacroStat(
-                Icons.fitness_center_rounded,
-                '5 g',
-                'Protein',
-                SnackDetailsScreen.green,
-              ),
-            ),
-            _MacroLine(),
-            Expanded(
-              child: _MacroStat(
-                Icons.grain_rounded,
-                '25 g',
-                'Carbs',
-                SnackDetailsScreen.blue,
-              ),
-            ),
-            _MacroLine(),
-            Expanded(
-              child: _MacroStat(
-                Icons.water_drop_outlined,
-                '8 g',
-                'Fat',
-                SnackDetailsScreen.orange,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 21),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 14,
-          runSpacing: 8,
-          children: const [
-            _InfoText(CupertinoIcons.clock, 'Planned for 5:30 PM'),
-            _InfoText(
-              CupertinoIcons.bolt,
-              '600 kcal remaining',
-              accent: SnackDetailsScreen.purple,
-            ),
-          ],
         ),
       ],
     );
@@ -317,13 +319,13 @@ class _MacroStat extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Container(
-        width: 48,
-        height: 48,
+        width: 34,
+        height: 34,
         decoration: BoxDecoration(
           color: color.withValues(alpha: .09),
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, size: 24, color: color),
+        child: Icon(icon, size: 18, color: color),
       ),
       const SizedBox(width: 8),
       Flexible(
@@ -332,12 +334,12 @@ class _MacroStat extends StatelessWidget {
           children: [
             Text(
               value,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
             Text(
               label,
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: 11,
                 color: SnackDetailsScreen.secondary,
               ),
             ),
@@ -353,9 +355,9 @@ class _MacroLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 50,
+    height: 38,
     width: 1,
-    margin: const EdgeInsets.symmetric(horizontal: 10),
+    margin: const EdgeInsets.symmetric(horizontal: 6),
     color: SnackDetailsScreen.line,
   );
 }
@@ -375,12 +377,12 @@ class _InfoText extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Icon(icon, size: 21, color: const Color(0xFF555D68)),
+      Icon(icon, size: 16, color: const Color(0xFF555D68)),
       const SizedBox(width: 7),
       Text(
         text,
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 12,
           color: accent,
           fontWeight: accent == SnackDetailsScreen.purple
               ? FontWeight.w600
@@ -402,13 +404,13 @@ class _FoodsCard extends StatelessWidget {
           children: [
             Text(
               'Foods in this meal',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
             ),
             Spacer(),
             Text(
               'Edit meal',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 10,
                 color: SnackDetailsScreen.purple,
                 fontWeight: FontWeight.w500,
               ),
@@ -417,11 +419,11 @@ class _FoodsCard extends StatelessWidget {
             Icon(
               Icons.edit_outlined,
               color: SnackDetailsScreen.purple,
-              size: 21,
+              size: 15,
             ),
           ],
         ),
-        const SizedBox(height: 19),
+        const SizedBox(height: 12),
         const _FoodItem('Apple', '150 g', '78 kcal', FoodType.apple),
         const SizedBox(height: 10),
         const _FoodItem('Almonds', '20 g', '120 kcal', FoodType.almonds),
@@ -439,7 +441,7 @@ class _FoodsCard extends StatelessWidget {
               'Add food',
               style: TextStyle(
                 color: SnackDetailsScreen.purple,
-                fontSize: 17,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -462,8 +464,8 @@ class _FoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 112,
-    padding: const EdgeInsets.all(10),
+    height: 82,
+    padding: const EdgeInsets.all(7),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(20),
@@ -472,14 +474,24 @@ class _FoodItem extends StatelessWidget {
     child: Row(
       children: [
         SizedBox(
-          width: 105,
-          height: 90,
+          width: 76,
+          height: 62,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: CustomPaint(painter: _SmallFoodPainter(type)),
+            child: AppNetworkImage(
+              url: type == FoodType.apple
+                  ? 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=320&q=85'
+                  : 'https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=320&q=85',
+              fallback: type == FoodType.apple
+                  ? Icons.apple
+                  : Icons.grain_rounded,
+              width: 76,
+              height: 62,
+              radius: 15,
+            ),
           ),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -488,18 +500,15 @@ class _FoodItem extends StatelessWidget {
               Text(
                 name,
                 style: const TextStyle(
-                  fontSize: 19,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(grams, style: const TextStyle(fontSize: 15)),
-              const SizedBox(height: 6),
+              const SizedBox(height: 2),
+              Text(grams, style: const TextStyle(fontSize: 11)),
+              const SizedBox(height: 3),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 11,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF0E8FF),
                   borderRadius: BorderRadius.circular(20),
@@ -508,7 +517,7 @@ class _FoodItem extends StatelessWidget {
                   calories,
                   style: const TextStyle(
                     color: SnackDetailsScreen.purple,
-                    fontSize: 13,
+                    fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -519,13 +528,13 @@ class _FoodItem extends StatelessWidget {
         const Icon(
           Icons.remove_circle_outline,
           color: SnackDetailsScreen.purple,
-          size: 22,
+          size: 18,
         ),
         const SizedBox(width: 8),
         const Icon(
           Icons.add_circle_outline,
           color: SnackDetailsScreen.purple,
-          size: 22,
+          size: 18,
         ),
       ],
     ),
@@ -537,12 +546,13 @@ class _NutritionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _Card(
+    radius: 10,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Nutrition Summary',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 18),
         LayoutBuilder(
@@ -580,31 +590,38 @@ class _NutritionCard extends StatelessWidget {
               ),
             ];
             final list = Column(
-              children: [for (final row in rows) _NutritionRow(row)],
+              children: [
+                for (var index = 0; index < rows.length; index++) ...[
+                  _NutritionRow(rows[index]),
+                  if (index < rows.length - 1)
+                    const Divider(height: 1, color: Color(0xFFE8EAF0)),
+                ],
+              ],
             );
             final donut = const SizedBox(
-              width: 150,
-              height: 150,
+              width: 112,
+              height: 112,
               child: CustomPaint(
                 painter: _NutritionDonut(),
                 child: Center(
                   child: Text(
                     '200\nkcal',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
             );
-            return constraints.maxWidth < 530
-                ? Column(children: [list, const SizedBox(height: 18), donut])
-                : Row(
-                    children: [
-                      Expanded(child: list),
-                      const SizedBox(width: 25),
-                      donut,
-                    ],
-                  );
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: list),
+                const SizedBox(width: 12),
+                Container(width: 1, height: 166, color: Color(0xFFE3E6EC)),
+                const SizedBox(width: 12),
+                donut,
+              ],
+            );
           },
         ),
       ],
@@ -628,28 +645,29 @@ class _NutritionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: 42,
+    height: 32,
     child: Row(
       children: [
         Container(
-          width: 32,
-          height: 32,
+          width: 26,
+          height: 26,
           decoration: BoxDecoration(
             color: data.color.withValues(alpha: .1),
             shape: BoxShape.circle,
           ),
-          child: Icon(data.icon, size: 18, color: data.color),
+          child: Icon(data.icon, size: 15, color: data.color),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             data.title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
           ),
         ),
+        const SizedBox(width: 8),
         Text(
           data.value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
         ),
       ],
     ),
@@ -667,7 +685,7 @@ class _ImpactCard extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             'Impact on your day',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(height: 20),
@@ -678,24 +696,14 @@ class _ImpactCard extends StatelessWidget {
               ('This meal uses', '200', SnackDetailsScreen.orange, .32),
               ('After this meal', '400', SnackDetailsScreen.green, .48),
             ];
-            return constraints.maxWidth < 500
-                ? Column(
-                    children: [
-                      for (final item in values)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: _ImpactColumn(item),
-                        ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      for (var i = 0; i < values.length; i++) ...[
-                        if (i > 0) const _ImpactDivider(),
-                        Expanded(child: _ImpactColumn(values[i])),
-                      ],
-                    ],
-                  );
+            return Row(
+              children: [
+                for (var i = 0; i < values.length; i++) ...[
+                  if (i > 0) const _ImpactDivider(),
+                  Expanded(child: _ImpactColumn(values[i])),
+                ],
+              ],
+            );
           },
         ),
       ],
@@ -714,7 +722,7 @@ class _ImpactColumn extends StatelessWidget {
       Text(
         data.$1,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
       ),
       const SizedBox(height: 8),
       Text.rich(
@@ -723,14 +731,14 @@ class _ImpactColumn extends StatelessWidget {
             TextSpan(
               text: data.$2,
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 color: data.$3,
               ),
             ),
             TextSpan(
               text: ' kcal',
-              style: TextStyle(fontSize: 15, color: data.$3),
+              style: TextStyle(fontSize: 12, color: data.$3),
             ),
           ],
         ),
@@ -739,7 +747,7 @@ class _ImpactColumn extends StatelessWidget {
       ClipRRect(
         borderRadius: BorderRadius.circular(100),
         child: SizedBox(
-          height: 9,
+          height: 7,
           width: double.infinity,
           child: LinearProgressIndicator(
             value: data.$4,
@@ -778,22 +786,24 @@ class _PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Material(
     color: SnackDetailsScreen.purple,
-    borderRadius: BorderRadius.circular(25),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    elevation: 2,
+    shadowColor: const Color(0x22000000),
     child: InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(20),
       child: SizedBox(
-        height: 68,
+        height: 46,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.white, size: 30),
-            const SizedBox(width: 11),
+            Icon(icon, color: Colors.white, size: 18),
+            const SizedBox(width: 7),
             Text(
               label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -817,7 +827,7 @@ class _EditSkipButtons extends StatelessWidget {
           SnackDetailsScreen.purple,
         ),
       ),
-      SizedBox(width: 14),
+      SizedBox(width: 8),
       Expanded(
         child: _SecondaryButton(
           Icons.close,
@@ -837,161 +847,40 @@ class _SecondaryButton extends StatelessWidget {
   const _SecondaryButton(this.icon, this.label, this.color);
 
   @override
-  Widget build(BuildContext context) => Container(
-    height: 68,
-    decoration: BoxDecoration(
+  Widget build(BuildContext context) => SizedBox(
+    height: 46,
+    child: Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(25),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x14000000),
-          blurRadius: 18,
-          offset: Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: color, size: 26),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            label,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: color,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE7E9F0)),
+      ),
+      elevation: 1,
+      shadowColor: const Color(0x16000000),
+      child: InkWell(
+        onTap: () {},
+        borderRadius: BorderRadius.circular(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 18),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     ),
   );
-}
-
-class _FoodPainter extends CustomPainter {
-  const _FoodPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = const Color(0xFFF1F1F3),
-    );
-    final apple = Paint()..color = const Color(0xFFE5292E);
-    canvas.drawCircle(
-      Offset(size.width * .68, size.height * .28),
-      size.width * .15,
-      apple,
-    );
-    canvas.drawCircle(
-      Offset(size.width * .62, size.height * .32),
-      size.width * .12,
-      apple,
-    );
-    canvas.drawCircle(
-      Offset(size.width * .74, size.height * .32),
-      size.width * .12,
-      apple,
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width * .42, size.height * .68),
-        width: size.width * .56,
-        height: size.height * .22,
-      ),
-      Paint()..color = const Color(0xFFEFEFF0),
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width * .42, size.height * .54),
-        width: size.width * .57,
-        height: size.height * .24,
-      ),
-      Paint()..color = Colors.white,
-    );
-    final almond = Paint()..color = const Color(0xFFAD642A);
-    for (var i = 0; i < 16; i++) {
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(
-            size.width * (.22 + (i % 4) * .095),
-            size.height * (.48 + (i ~/ 4) * .055),
-          ),
-          width: 15,
-          height: 8,
-        ),
-        almond,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _SmallFoodPainter extends CustomPainter {
-  final FoodType type;
-
-  const _SmallFoodPainter(this.type);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = const Color(0xFFF8F8F9),
-    );
-    if (type == FoodType.apple) {
-      final apple = Paint()..color = const Color(0xFFE32930);
-      canvas.drawCircle(Offset(size.width * .47, size.height * .46), 27, apple);
-      canvas.drawCircle(Offset(size.width * .38, size.height * .46), 20, apple);
-      canvas.drawCircle(Offset(size.width * .56, size.height * .46), 20, apple);
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(size.width * .64, size.height * .24),
-          width: 25,
-          height: 12,
-        ),
-        Paint()..color = const Color(0xFF5CA33C),
-      );
-    } else {
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(size.width * .5, size.height * .68),
-          width: 82,
-          height: 28,
-        ),
-        Paint()..color = const Color(0xFFF0F0F0),
-      );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(size.width * .5, size.height * .48),
-          width: 88,
-          height: 35,
-        ),
-        Paint()..color = Colors.white,
-      );
-      final almond = Paint()..color = const Color(0xFFA96632);
-      for (var i = 0; i < 12; i++) {
-        canvas.drawOval(
-          Rect.fromCenter(
-            center: Offset(
-              size.width * (.25 + (i % 4) * .14),
-              size.height * (.38 + (i ~/ 4) * .08),
-            ),
-            width: 16,
-            height: 9,
-          ),
-          almond,
-        );
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class _NutritionDonut extends CustomPainter {
@@ -1000,7 +889,7 @@ class _NutritionDonut extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final radius = math.min(size.width, size.height) / 2 - 8;
+    final radius = math.min(size.width, size.height) / 2 - 10;
     var start = -math.pi / 2;
     for (final section in const [
       (0.47, SnackDetailsScreen.blue),
@@ -1015,7 +904,7 @@ class _NutritionDonut extends CustomPainter {
         false,
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 14
+          ..strokeWidth = 8
           ..color = section.$2,
       );
       start += sweep;
