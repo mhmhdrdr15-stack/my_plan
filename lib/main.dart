@@ -4,7 +4,9 @@ import 'app_localization.dart';
 import 'app_state.dart';
 import 'app_bottom_nav.dart';
 import 'edit_plan_screen.dart';
+import 'edit_breakfast_page.dart';
 import 'log_screen.dart';
+import 'meal_actions_sheet.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
@@ -1363,6 +1365,65 @@ class MealRow extends StatelessWidget {
     required this.status,
   });
 
+  MealActionStatus get actionStatus => switch (status) {
+    MealStatus.logged => MealActionStatus.logged,
+    MealStatus.planned => MealActionStatus.planned,
+    MealStatus.skipped => MealActionStatus.skipped,
+  };
+
+  void showActions(BuildContext context) {
+    MealActionsSheet.show(
+      context: context,
+      mealName: title,
+      mealTime: time,
+      nutrition: nutrition,
+      status: actionStatus,
+      onEditMeal: () {
+        if (title == 'Breakfast') {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(builder: (_) => const EditBreakfastPage()),
+          );
+        }
+      },
+      onChangeTime: () async {
+        final selected = await showTimePicker(
+          context: context,
+          initialTime: _parseMealTime(time),
+        );
+        if (selected != null && context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('$title time changed')));
+        }
+      },
+      onMoveMeal: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Choose a day to move $title'))),
+      onViewMeal: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Opening $title details'))),
+      onRemoveFromPlan: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$title removed from plan'))),
+      onLogMeal: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$title logged'))),
+      onSkipMeal: () => ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$title skipped'))),
+    );
+  }
+
+  TimeOfDay _parseMealTime(String value) {
+    final parts = value.split(' ');
+    final clock = parts.first.split(':');
+    var hour = int.tryParse(clock.first) ?? 12;
+    final minute = int.tryParse(clock.last) ?? 0;
+    if (parts.length > 1 && parts.last == 'PM' && hour != 12) hour += 12;
+    if (parts.length > 1 && parts.last == 'AM' && hour == 12) hour = 0;
+    return TimeOfDay(hour: hour, minute: minute);
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = switch (status) {
@@ -1486,10 +1547,14 @@ class MealRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 3),
-          const Icon(
-            Icons.more_horiz_rounded,
-            color: Color(0xFF727A8B),
-            size: 19,
+          IconButton(
+            onPressed: () => showActions(context),
+            tooltip: translateText(context, 'More options'),
+            icon: const Icon(
+              Icons.more_horiz_rounded,
+              size: 20,
+              color: Color(0xFF727A8B),
+            ),
           ),
         ],
       ),

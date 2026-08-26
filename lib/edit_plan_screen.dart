@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'edit_breakfast_page.dart';
 import 'reusable_widgets.dart';
 
 class EditPlanScreen extends StatelessWidget {
@@ -303,77 +304,98 @@ class _MealCard extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context) => AppCard(
-    padding: const EdgeInsets.fromLTRB(10, 10, 10, 9),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          width: 22,
-          child: Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Icon(
-              Icons.drag_handle_rounded,
-              color: Color(0xFF667085),
-              size: 22,
+  Widget build(BuildContext context) {
+    final card = AppCard(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 9),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: 22,
+            child: Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Icon(
+                Icons.drag_handle_rounded,
+                color: Color(0xFF667085),
+                size: 22,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 7),
-        AppNetworkImage(
-          url: imageUrl,
-          fallback: meal.icon,
-          width: 48,
-          height: 48,
-          radius: 14,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(width: 7),
+          AppNetworkImage(
+            url: imageUrl,
+            fallback: meal.icon,
+            width: 48,
+            height: 48,
+            radius: 14,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  meal.title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  meal.time,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF667085),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                for (final item in meal.items)
+                  Text(
+                    '• $item',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 11.5),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 5),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                meal.title,
+                '${meal.kcal} kcal',
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w700,
                 ),
               ),
+              const SizedBox(height: 5),
               Text(
-                meal.time,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF667085)),
-              ),
-              const SizedBox(height: 4),
-              for (final item in meal.items)
-                Text(
-                  '• $item',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 11.5),
+                meal.protein,
+                style: const TextStyle(
+                  fontSize: 10.5,
+                  color: Color(0xFF667085),
                 ),
+              ),
+              const SizedBox(height: 8),
+              const Icon(Icons.more_horiz_rounded, size: 20),
             ],
           ),
-        ),
-        const SizedBox(width: 5),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${meal.kcal} kcal',
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              meal.protein,
-              style: const TextStyle(fontSize: 10.5, color: Color(0xFF667085)),
-            ),
-            const SizedBox(height: 8),
-            const Icon(Icons.more_horiz_rounded, size: 20),
-          ],
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+
+    if (meal.title != 'Breakfast') return card;
+
+    return InkWell(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const EditBreakfastPage()),
+      ),
+      borderRadius: BorderRadius.circular(20),
+      child: card,
+    );
+  }
 }
 
 class _AddMealButton extends StatelessWidget {
