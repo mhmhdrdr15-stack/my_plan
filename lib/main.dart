@@ -3,6 +3,7 @@ import 'add_food_screen.dart';
 import 'app_localization.dart';
 import 'app_state.dart';
 import 'app_bottom_nav.dart';
+import 'edit_plan_screen.dart';
 import 'log_screen.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
@@ -1260,7 +1261,11 @@ class TodayPlanCard extends StatelessWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () {},
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const EditPlanScreen(),
+                  ),
+                ),
                 child: Row(
                   children: [
                     Icon(

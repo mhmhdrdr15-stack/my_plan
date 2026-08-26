@@ -10,8 +10,13 @@ import 'reusable_widgets.dart';
 
 class PlanScreen extends StatefulWidget {
   final bool showBottomNav;
+  final bool editMode;
 
-  const PlanScreen({super.key, this.showBottomNav = true});
+  const PlanScreen({
+    super.key,
+    this.showBottomNav = true,
+    this.editMode = false,
+  });
 
   @override
   State<PlanScreen> createState() => _PlanScreenState();
@@ -41,13 +46,21 @@ class _PlanScreenState extends State<PlanScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _header(),
-                    const SizedBox(height: 24),
-                    _dayStrip(),
-                    const SizedBox(height: 22),
+                    if (widget.editMode) ...[
+                      const SizedBox(height: 8),
+                      _dateSelector(),
+                      const SizedBox(height: 16),
+                    ] else ...[
+                      const SizedBox(height: 16),
+                      _dayStrip(),
+                      const SizedBox(height: 22),
+                    ],
                     _dailyTargets(),
-                    const SizedBox(height: 20),
-                    _tabs(),
-                    const SizedBox(height: 20),
+                    if (!widget.editMode) ...[
+                      const SizedBox(height: 20),
+                      _tabs(),
+                    ],
+                    const SizedBox(height: 18),
                     _mealsHeader(),
                     const SizedBox(height: 14),
                     _timelineMeal(
@@ -106,7 +119,7 @@ class _PlanScreenState extends State<PlanScreen> {
                     ),
                     const SizedBox(height: 8),
                     _addMealButton(),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 18),
                     _nutritionSummary(),
                     const SizedBox(height: 16),
                     _tipCard(),
@@ -149,33 +162,61 @@ class _PlanScreenState extends State<PlanScreen> {
 
   Widget _header() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        IconButton(
+          onPressed: () => Navigator.of(context).maybePop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          tooltip: translateText(context, 'Back'),
+        ),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                translateText(context, 'Plan'),
-                style: TextStyle(
-                  fontSize: 40,
+                widget.editMode ? "Edit Today's Plan" : 'Plan',
+                style: const TextStyle(
+                  fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: text,
                 ),
               ),
-              SizedBox(height: 4),
-              Text(
-                translateText(context, 'Plan your meals. Stay on track.'),
-                style: TextStyle(fontSize: 16, color: secondary),
-              ),
+              if (!widget.editMode)
+                Text(
+                  translateText(context, 'Plan your meals. Stay on track.'),
+                  style: TextStyle(fontSize: 16, color: secondary),
+                ),
             ],
           ),
         ),
-        IconButton(
+        TextButton(
           onPressed: () {},
-          icon: const Icon(Icons.more_horiz_rounded, size: 28, color: text),
-          tooltip: translateText(context, 'More options'),
+          child: const Text(
+            'Save',
+            style: TextStyle(
+              color: purple,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ),
+      ],
+    );
+  }
+
+  Widget _dateSelector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.chevron_left_rounded, size: 22),
+        const SizedBox(width: 18),
+        const Icon(Icons.calendar_today_outlined, size: 17),
+        const SizedBox(width: 9),
+        Text(
+          'Sunday, 23 August',
+          style: TextStyle(fontSize: 16, color: secondary),
+        ),
+        const SizedBox(width: 18),
+        const Icon(Icons.chevron_right_rounded, size: 22),
       ],
     );
   }
@@ -249,7 +290,7 @@ class _PlanScreenState extends State<PlanScreen> {
             children: [
               Expanded(
                 child: Text(
-                  translateText(context, 'Daily Targets'),
+                  widget.editMode ? 'Planned Nutrition' : 'Daily Targets',
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
