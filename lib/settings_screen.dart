@@ -4,6 +4,7 @@ import 'app_bottom_nav.dart';
 import 'app_localization.dart';
 import 'app_state.dart';
 import 'log_screen.dart';
+import 'notification_settings_page.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
@@ -58,8 +59,7 @@ class SettingsScreen extends StatelessWidget {
               const _SettingData(
                 Icons.notifications_none_rounded,
                 'Notifications',
-                'Customize your notifications',
-                trailing: 'On',
+                'Meal, water and progress reminders',
               ),
               const _SettingData(
                 Icons.water_drop_outlined,
@@ -492,6 +492,14 @@ class _SettingRow extends StatelessWidget {
   }
 
   Future<void> _handleTap(BuildContext context) async {
+    if (item.title == 'Notifications') {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const NotificationSettingsPage(),
+        ),
+      );
+      return;
+    }
     if (item.title == 'Language') {
       final selectedLanguage = await showDialog<Locale>(
         context: context,
