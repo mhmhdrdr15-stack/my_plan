@@ -7,6 +7,7 @@ import 'edit_plan_screen.dart';
 import 'edit_breakfast_page.dart';
 import 'log_screen.dart';
 import 'meal_actions_sheet.dart';
+import 'notifications_page.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';
@@ -284,7 +285,11 @@ class HeaderSection extends StatelessWidget {
             button: true,
             label: 'Notifications',
             child: InkWell(
-              onTap: () {},
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const NotificationsPage(),
+                ),
+              ),
               borderRadius: BorderRadius.circular(14),
               child: Stack(
                 clipBehavior: Clip.none,
