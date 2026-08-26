@@ -320,7 +320,7 @@ class _MacroStat extends StatelessWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: color.withOpacity(.09),
+          color: color.withValues(alpha: .09),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, size: 24, color: color),
@@ -635,7 +635,7 @@ class _NutritionRow extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: data.color.withOpacity(.1),
+            color: data.color.withValues(alpha: .1),
             shape: BoxShape.circle,
           ),
           child: Icon(data.icon, size: 18, color: data.color),

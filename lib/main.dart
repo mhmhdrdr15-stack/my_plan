@@ -4,7 +4,6 @@ import 'app_localization.dart';
 import 'app_state.dart';
 import 'app_bottom_nav.dart';
 import 'log_screen.dart';
-import 'meal_details_screen.dart';
 import 'plan_screen.dart';
 import 'progress_screen.dart';
 import 'reusable_widgets.dart';

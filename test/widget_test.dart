@@ -41,6 +41,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Foods in this meal'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Nutrition Summary'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Nutrition Summary'), findsOneWidget);
   });
 
