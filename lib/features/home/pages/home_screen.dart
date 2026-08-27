@@ -179,9 +179,9 @@ class HeaderSection extends StatelessWidget {
           final visibleFoods = widget.foods.take(2).map(
             (food) => '${translateText(context, food.name)} ${food.grams}g',
           );
-          final summary = visibleFoods.join(' ┬╖ ');
+          final summary = visibleFoods.join(' • ');
           return widget.foods.length > 2
-              ? '$summary ┬╖ +${widget.foods.length - 2} ${translateText(context, 'more')}'
+              ? '$summary • +${widget.foods.length - 2} ${translateText(context, 'more')}'
               : summary;
         }
 
@@ -311,7 +311,7 @@ class HeaderSection extends StatelessWidget {
                             ),
                             const SizedBox(height: 7),
                             Text(
-                              '${widget.calories} kcal ┬╖ ${widget.protein} g protein',
+                              '${widget.calories} kcal • ${widget.protein} g protein',
                               style: const TextStyle(
                                 color: Color(0xFF4D5569),
                                 fontSize: 11,
@@ -478,7 +478,7 @@ class _NextMealCardState extends State<NextMealCard> {
     final foodsSummary = widget.foods
         .take(2)
         .map((food) => '${translateText(context, food.name)} ${food.grams}g')
-        .join(' ┬╖ ');
+        .join(' • ');
     return GestureDetector(
       onTap: widget.onTap,
       child: AppCard(
@@ -516,7 +516,7 @@ class _NextMealCardState extends State<NextMealCard> {
                     width: 72,
                     height: 72,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const SizedBox(
+                    errorBuilder: (context, error, stackTrace) => const SizedBox(
                       width: 72,
                       height: 72,
                       child: Icon(Icons.restaurant_rounded),
@@ -551,7 +551,7 @@ class _NextMealCardState extends State<NextMealCard> {
                       const SizedBox(height: 6),
                       Text(foodsSummary, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.muted, fontSize: 11)),
                       const SizedBox(height: 6),
-                      Text('${widget.calories} kcal ┬╖ ${widget.protein} g protein', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      Text('${widget.calories} kcal • ${widget.protein} g protein', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
                       const SizedBox(height: 7),
                       SmallStatus(
                         text: translateText(context, isLogged ? 'Logged' : 'Planned'),
@@ -787,7 +787,7 @@ class _CalorieSummary extends StatelessWidget {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('≡ƒöÑ', style: TextStyle(fontSize: 22)),
+                      Text('🔥', style: TextStyle(fontSize: 22)),
                       SizedBox(height: 3),
                       Text(
                         '1,200',
@@ -863,7 +863,7 @@ class _CalorieSummary extends StatelessWidget {
                   SizedBox(width: 4),
                   Flexible(
                     child: Text(
-                      translateText(context, "You're on track! ≡ƒÄ»"),
+                      translateText(context, "You're on track! 🎉"),
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(

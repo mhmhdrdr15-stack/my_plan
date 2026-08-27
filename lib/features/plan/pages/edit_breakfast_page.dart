@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class EditBreakfastPage extends StatefulWidget {
@@ -46,22 +47,22 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Remove Breakfast?', style: _titleStyle),
-        content: const Text(
-          "This meal will be removed from today's plan.",
+        title: Text(translateText(context, 'Remove Breakfast?'), style: _titleStyle),
+        content: Text(
+          translateText(context, "This meal will be removed from today's plan."),
           style: _mutedStyle,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(translateText(context, 'Cancel')),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF3E4B),
             ),
-            child: const Text('Remove'),
+            child: Text(translateText(context, 'Remove')),
           ),
         ],
       ),
@@ -115,7 +116,7 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
               const SizedBox(height: 12),
               _ActionTile(
                 icon: Icons.tune_rounded,
-                title: 'Edit serving',
+                title: translateText(context, 'Edit serving'),
                 onTap: () {
                   Navigator.pop(context);
                   editFoodQuantity(index);
@@ -123,7 +124,7 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
               ),
               _ActionTile(
                 icon: Icons.delete_outline_rounded,
-                title: 'Remove from meal',
+                title: translateText(context, 'Remove from meal'),
                 color: const Color(0xFFFF3E4B),
                 onTap: () {
                   Navigator.pop(context);
@@ -148,8 +149,8 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
       appBar: AppBar(
-        title: const Text(
-          'Edit Meal',
+        title: Text(
+          translateText(context, 'Edit Meal'),
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
         leading: IconButton(
@@ -159,8 +160,8 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Save',
+            child: Text(
+              translateText(context, 'Save'),
               style: TextStyle(fontWeight: FontWeight.w800),
             ),
           ),
@@ -177,13 +178,13 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
                 color: Color(0xFFFF8A16),
               ),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Breakfast', style: _headingStyle),
+                    Text(translateText(context, 'Breakfast'), style: _headingStyle),
                     SizedBox(height: 4),
-                    Text('Plan this meal for your day', style: _mutedStyle),
+                    Text(translateText(context, 'Plan this meal for your day'), style: _mutedStyle),
                   ],
                 ),
               ),
@@ -195,7 +196,7 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Meal Time', style: _sectionStyle),
+                Text(translateText(context, 'Meal Time'), style: _sectionStyle),
                 const SizedBox(height: 12),
                 InkWell(
                   onTap: selectMealTime,
@@ -232,9 +233,9 @@ class _EditBreakfastPageState extends State<EditBreakfastPage> {
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
             child: Column(
               children: [
-                const Row(
+                Row(
                   children: [
-                    Text('Foods in this meal', style: _sectionStyle),
+                    Text(translateText(context, 'Foods in this meal'), style: _sectionStyle),
                     Spacer(),
                   ],
                 ),

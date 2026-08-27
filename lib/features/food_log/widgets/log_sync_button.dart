@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 
 class LogSyncButton extends StatefulWidget {
   final Future<void> Function()? onSync;
@@ -46,12 +47,12 @@ class _LogSyncButtonState extends State<LogSyncButton>
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Row(
               children: [
                 Icon(Icons.check_circle_rounded, color: Colors.white, size: 19),
                 SizedBox(width: 8),
-                Text('Log updated'),
+                Text(translateText(context, 'Log updated')),
               ],
             ),
             behavior: SnackBarBehavior.floating,
@@ -64,7 +65,7 @@ class _LogSyncButtonState extends State<LogSyncButton>
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
                 Icon(
                   Icons.error_outline_rounded,
@@ -72,12 +73,12 @@ class _LogSyncButtonState extends State<LogSyncButton>
                   size: 19,
                 ),
                 SizedBox(width: 8),
-                Expanded(child: Text("Couldn't update your log")),
+                Expanded(child: Text(translateText(context, "Couldn't update your log"))),
               ],
             ),
             behavior: SnackBarBehavior.floating,
             action: SnackBarAction(
-              label: 'Retry',
+              label: translateText(context, 'Retry'),
               textColor: Colors.white,
               onPressed: syncLog,
             ),

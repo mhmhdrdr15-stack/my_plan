@@ -468,8 +468,8 @@ class _PlanScreenState extends State<PlanScreen> {
         children: [
           Row(
             children: [
-              const Text(
-                'Daily Target',
+              Text(
+                translateText(context, 'Daily Target'),
                 style: TextStyle(
                   color: Color(0xFF17203A),
                   fontSize: 16,
@@ -502,7 +502,7 @@ class _PlanScreenState extends State<PlanScreen> {
                   }
                 },
                 icon: const Icon(Icons.edit_outlined, size: 15),
-                label: const Text('Edit Target'),
+                label: Text(translateText(context, 'Edit Target')),
                 style: TextButton.styleFrom(
                   foregroundColor: Color(0xFF5B35F5),
                   padding: EdgeInsets.zero,
