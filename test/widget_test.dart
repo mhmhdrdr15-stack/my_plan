@@ -136,7 +136,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('app-nav-2')));
     await tester.pumpAndSettle();
-    expect(find.text('Log Food'), findsOneWidget);
+    expect(find.text('Planning'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('app-nav-3')));
     await tester.pumpAndSettle();
@@ -151,15 +151,24 @@ void main() {
     expect(find.byKey(const ValueKey('app-nav-0')), findsOneWidget);
   });
 
-  testWidgets('opens the food log history from the log screen header action', (
+  testWidgets('opens the food log from the progress page', (
     WidgetTester tester,
   ) async {
     appLocale.value = const Locale('en');
     await tester.pumpWidget(const NutritionApp());
 
-    await tester.tap(find.byKey(const ValueKey('app-nav-2')));
+    await tester.tap(find.byKey(const ValueKey('app-nav-3')));
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('progress-open-log')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -180));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('progress-open-log')));
+    await tester.pumpAndSettle();
     expect(find.text('Log Food'), findsOneWidget);
 
     await tester.tap(find.byTooltip('History'));

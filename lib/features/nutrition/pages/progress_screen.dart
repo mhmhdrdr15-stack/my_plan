@@ -66,7 +66,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
       ),
       body: ListView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 110),
         children: [
           Text(
             translateText(
@@ -91,6 +91,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
           _weightCard(),
           const SizedBox(height: 12),
           _insightsCard(),
+          const SizedBox(height: 14),
+          _logHistoryButton(),
         ],
       ),
       bottomNavigationBar: widget.showBottomNav
@@ -117,7 +119,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     }
     final destination = switch (index) {
       1 => const PlanScreen(),
-      2 => const LogFoodScreen(),
+      2 => const PlanScreen(showBottomNav: false),
       _ => null,
     };
     if (destination != null) {
@@ -454,7 +456,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     return _card(
       title: translateText(context, 'Weight  |  Last 30 days'),
       child: SizedBox(
-        height: 105,
+        height: 110,
         child: Row(
           children: [
             Expanded(child: CustomPaint(painter: _WeightChartPainter())),
@@ -522,6 +524,29 @@ class _ProgressScreenState extends State<ProgressScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _logHistoryButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 46,
+      child: OutlinedButton.icon(
+        key: const ValueKey('progress-open-log'),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const LogFoodScreen(showBottomNav: false),
+          ),
+        ),
+        icon: const Icon(Icons.history_rounded, size: 19),
+        label: Text(translateText(context, 'Log')),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primary,
+          side: const BorderSide(color: Color(0xFFDCD6FF)),
+          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       ),
     );
   }

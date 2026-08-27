@@ -7,6 +7,7 @@ const Map<String, String> _arabicTranslations = {
   'Home': 'الرئيسية',
   'Plan': 'الخطة',
   'Log': 'السجل',
+  'Planning': 'تخطيط',
   'Progress': 'التقدم',
   'Settings': 'الإعدادات',
   'Back': 'رجوع',

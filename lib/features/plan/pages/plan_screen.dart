@@ -5,7 +5,6 @@ import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
 import 'package:my_plan/features/plan/widgets/add_meal_snack_sheet.dart';
 import 'package:my_plan/core/navigation/app_bottom_nav.dart';
 import 'package:my_plan/core/localization/app_localization.dart';
-import 'package:my_plan/features/food_log/pages/log_screen.dart';
 import 'package:my_plan/features/plan/pages/edit_plan_screen.dart';
 import 'package:my_plan/features/plan/pages/edit_daily_targets_page.dart';
 import 'package:my_plan/features/plan/widgets/plan_header_actions.dart';
@@ -332,8 +331,8 @@ class _PlanScreenState extends State<PlanScreen> {
     }
     if (index == 1) return;
     final destination = index == 2
-        ? const LogFoodScreen()
-        : const ProgressScreen();
+      ? const PlanScreen(showBottomNav: false)
+      : const ProgressScreen();
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => destination));

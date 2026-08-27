@@ -55,7 +55,7 @@ class AppBottomNav extends StatelessWidget {
                   ),
                 ),
               ),
-              _item(Icons.history_rounded, 'Log', 'السجل', 2, context),
+              _item(Icons.event_note_outlined, 'Planning', 'تخطيط', 2, context),
               _item(Icons.bar_chart_rounded, 'Progress', 'التقدم', 3, context),
             ],
           ),

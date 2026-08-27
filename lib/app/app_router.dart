@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_plan/features/food_log/pages/log_screen.dart';
 import 'package:my_plan/features/home/pages/home_screen.dart';
 import 'package:my_plan/features/nutrition/pages/progress_screen.dart';
 import 'package:my_plan/features/plan/pages/plan_screen.dart';
@@ -11,7 +10,7 @@ class AppRouter {
     return switch (index) {
       0 => const HomeScreen(),
       1 => const PlanScreen(showBottomNav: false),
-      2 => const LogFoodScreen(showBottomNav: false),
+      2 => const PlanScreen(showBottomNav: false),
       3 => const ProgressScreen(showBottomNav: false),
       _ => const HomeScreen(),
     };
