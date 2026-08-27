@@ -6,6 +6,7 @@ import 'package:my_plan/core/widgets/reusable_widgets.dart';
 import 'package:my_plan/features/nutrition/pages/snack_details_screen.dart';
 import 'package:my_plan/features/nutrition/pages/today_details_screen.dart';
 import 'package:my_plan/features/settings/pages/settings_screen.dart';
+import 'package:my_plan/features/home/widgets/next_meal_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -421,27 +422,27 @@ class HeaderSection extends StatelessWidget {
   }
 }
 
-enum NextMealStatus { planned, logged, skipped, overdue }
+enum LegacyNextMealStatus { planned, logged, skipped, overdue }
 
-class MealFood {
+class LegacyMealFood {
   final String name;
   final int grams;
 
-  const MealFood({required this.name, required this.grams});
+  const LegacyMealFood({required this.name, required this.grams});
 }
 
-class NextMealCard extends StatefulWidget {
+class LegacyNextMealCard extends StatefulWidget {
   final String mealName;
   final String time;
-  final List<MealFood> foods;
+  final List<LegacyMealFood> foods;
   final int calories;
   final int protein;
   final int remainingCalories;
-  final NextMealStatus status;
+  final LegacyNextMealStatus status;
   final String imageAsset;
   final VoidCallback? onTap;
 
-  const NextMealCard({
+  const LegacyNextMealCard({
     super.key,
     required this.mealName,
     required this.time,
@@ -455,14 +456,14 @@ class NextMealCard extends StatefulWidget {
   });
 
   @override
-  State<NextMealCard> createState() => _NextMealCardState();
+  State<LegacyNextMealCard> createState() => _LegacyNextMealCardState();
 }
 
-class _NextMealCardState extends State<NextMealCard> {
+class _LegacyNextMealCardState extends State<LegacyNextMealCard> {
   bool logged = false;
 
   Future<void> _markAsEaten() async {
-    if (logged || widget.status == NextMealStatus.logged) return;
+    if (logged || widget.status == LegacyNextMealStatus.logged) return;
     setState(() => logged = true);
     await appState.addFood(
       name: widget.mealName,
@@ -474,7 +475,7 @@ class _NextMealCardState extends State<NextMealCard> {
 
   @override
   Widget build(BuildContext context) {
-    final isLogged = logged || widget.status == NextMealStatus.logged;
+    final isLogged = logged || widget.status == LegacyNextMealStatus.logged;
     final foodsSummary = widget.foods
         .take(2)
         .map((food) => '${translateText(context, food.name)} ${food.grams}g')
