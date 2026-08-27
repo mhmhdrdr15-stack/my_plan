@@ -59,9 +59,8 @@ class _NextMealCardState extends State<NextMealCard> {
   Widget build(BuildContext context) {
     final isLogged = logged || widget.status == NextMealStatus.logged;
     final foodsSummary = widget.foods
-        .take(2)
-        .map((food) => '${translateText(context, food.name)} ${food.grams}g')
-        .join(' • ');
+      .map((food) => '${translateText(context, food.name)} ${food.grams}g')
+      .join(' • ');
     return GestureDetector(
       onTap: widget.onTap,
       child: AppCard(
@@ -72,15 +71,40 @@ class _NextMealCardState extends State<NextMealCard> {
           children: [
             Row(
               children: [
-                Text(
-                  translateText(context, 'Next Meal'),
-                  style: const TextStyle(
-                    color: AppColors.text,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w800,
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          translateText(context, 'Next Meal'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppColors.text,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        '•',
+                        style: TextStyle(color: AppColors.muted2, fontSize: 13),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        widget.time,
+                        style: const TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 const Icon(Icons.chevron_right_rounded, color: AppColors.primary, size: 22),
               ],
             ),
@@ -88,42 +112,39 @@ class _NextMealCardState extends State<NextMealCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    widget.imageAsset,
-                    width: 72,
-                    height: 72,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox(
-                      width: 72,
-                      height: 72,
-                      child: Icon(Icons.restaurant_rounded),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 11),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              translateText(context, widget.mealName),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                          Text(widget.time, style: const TextStyle(color: AppColors.muted, fontSize: 11, fontWeight: FontWeight.w700)),
-                        ],
+                      Text(
+                        translateText(context, widget.mealName),
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(height: 6),
-                      Text(foodsSummary, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+                      Text(
+                        foodsSummary,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          height: 1.55,
+                        ),
+                      ),
                       const SizedBox(height: 6),
-                      Text('${widget.calories} kcal • ${widget.protein} g protein', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      Text(
+                        '${widget.calories} kcal • ${widget.protein} g protein',
+                        style: const TextStyle(
+                          color: AppColors.text,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                       const SizedBox(height: 7),
                       SmallStatus(
                         text: translateText(context, isLogged ? 'Logged' : 'Planned'),
@@ -133,47 +154,50 @@ class _NextMealCardState extends State<NextMealCard> {
                     ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 11),
-            Container(
-              padding: const EdgeInsets.fromLTRB(11, 10, 11, 10),
-              decoration: BoxDecoration(color: const Color(0xFFF6F3FF), borderRadius: BorderRadius.circular(13)),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.bolt_rounded, color: AppColors.primary, size: 19),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: Text(
-                          '${widget.remainingCalories} kcal ${translateText(context, 'remaining')}',
-                          style: const TextStyle(color: AppColors.text, fontSize: 11, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                      Text('${((widget.remainingCalories / 1800) * 100).round()}%', style: const TextStyle(color: AppColors.primary, fontSize: 11, fontWeight: FontWeight.w800)),
-                    ],
-                  ),
-                  const SizedBox(height: 9),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 36,
-                    child: FilledButton.icon(
-                      key: const ValueKey('next-meal-mark-eaten'),
-                      onPressed: isLogged ? null : _markAsEaten,
-                      icon: Icon(isLogged ? Icons.check_circle_outline_rounded : Icons.check_rounded, size: 16),
-                      label: Text(translateText(context, isLogged ? 'Eaten' : 'Mark as eaten')),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF2DAA61),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
+                const SizedBox(width: 14),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Image.asset(
+                    widget.imageAsset,
+                    width: 132,
+                    height: 132,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 132,
+                      height: 132,
+                      color: AppColors.background,
+                      child: const Icon(Icons.restaurant_rounded, size: 34),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              height: 40,
+              child: FilledButton.icon(
+                key: const ValueKey('next-meal-mark-eaten'),
+                onPressed: isLogged ? null : _markAsEaten,
+                icon: Icon(
+                  isLogged ? Icons.check_circle_rounded : Icons.check_rounded,
+                  size: 17,
+                ),
+                label: Text(translateText(context, isLogged ? 'Eaten' : 'Mark as eaten')),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: const Color(0xFFECE9FF),
+                  disabledForegroundColor: AppColors.primary,
+                  elevation: 1,
+                  shadowColor: const Color(0x335B35F5),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: AppColors.primary2, width: 1),
+                  ),
+                ),
               ),
             ),
           ],

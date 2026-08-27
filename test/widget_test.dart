@@ -42,7 +42,8 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.byType(NextMealCard));
+    await tester.ensureVisible(find.byType(NextMealCard));
+    await tester.tap(find.text('Next Meal'));
     await tester.pumpAndSettle();
 
     expect(find.text('Foods in this meal'), findsOneWidget);
@@ -52,6 +53,59 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Nutrition Summary'), findsOneWidget);
+  });
+
+  testWidgets('opens plan editing from today plan card', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.scrollUntilVisible(
+      find.text("Today's Plan"),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const ValueKey('today-plan-edit')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Edit Today's Plan"), findsOneWidget);
+  });
+
+  testWidgets('opens meal actions from today plan dots', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('meal-actions-Breakfast')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const ValueKey('meal-actions-Breakfast')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Breakfast'), findsWidgets);
+    expect(find.text('View Meal'), findsOneWidget);
+  });
+
+  testWidgets('opens the selected meal in the shared details page', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.scrollUntilVisible(
+      find.text('Lunch'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Lunch'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Lunch'), findsWidgets);
+    expect(find.text('620 kcal', findRichText: true), findsOneWidget);
   });
 
   testWidgets('displays the health dashboard', (WidgetTester tester) async {

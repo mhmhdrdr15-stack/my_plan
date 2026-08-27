@@ -5,7 +5,22 @@ import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class MealDetailsScreen extends StatefulWidget {
-  const MealDetailsScreen({super.key});
+  final String mealName;
+  final String mealTime;
+  final List<String> ingredients;
+  final String calories;
+  final String protein;
+  final String imageUrl;
+
+  const MealDetailsScreen({
+    super.key,
+    required this.mealName,
+    required this.mealTime,
+    required this.ingredients,
+    required this.calories,
+    required this.protein,
+    required this.imageUrl,
+  });
 
   @override
   State<MealDetailsScreen> createState() => _MealDetailsScreenState();
@@ -98,13 +113,13 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
               children: [
                 _pill(
                   Icons.wb_sunny_outlined,
-                  translateText(context, 'Lunch  •  02:00 PM'),
+                  '${translateText(context, widget.mealName)}  •  ${widget.mealTime}',
                   const Color(0xFFF0EBFF),
                   purple,
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  translateText(context, 'Grilled Chicken\nwith Rice & Salad'),
+                  translateText(context, widget.mealName),
                   style: TextStyle(
                     color: navy,
                     fontSize: 25,
@@ -124,8 +139,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
           ),
         ),
         AppNetworkImage(
-          url:
-              'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=700&q=85',
+          url: widget.imageUrl,
           fallback: Icons.restaurant_rounded,
           width: 148,
           height: 196,
@@ -139,12 +153,12 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
     return _card(
       child: Row(
         children: [
-          Expanded(child: _macro('Total', '620', 'kcal', navy)),
+          Expanded(child: _macro('Total', widget.calories, 'kcal', navy)),
           Container(width: 1, height: 64, color: line),
           Expanded(
             child: _macro(
               'Protein',
-              '52',
+              widget.protein,
               'g',
               const Color(0xFFFF313A),
               icon: Icons.restaurant_rounded,
@@ -303,48 +317,22 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
   }
 
   Widget _ingredients() {
-    const items = [
-      (
-        'Grilled Chicken Breast',
-        '200 g',
-        '330 kcal',
-        'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=180&q=80',
-      ),
-      (
-        'Brown Rice (Cooked)',
-        '150 g',
-        '165 kcal',
-        'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=180&q=80',
-      ),
-      (
-        'Mixed Salad',
-        '100 g',
-        '80 kcal',
-        'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=180&q=80',
-      ),
-      (
-        'Olive Oil',
-        '10 g (1 tbsp)',
-        '90 kcal',
-        'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=180&q=80',
-      ),
-    ];
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionTitle(
             translateText(context, 'Ingredients'),
-            translateText(context, '4 items'),
+            '${widget.ingredients.length} items',
           ),
           const SizedBox(height: 8),
-          ...items.map(
-            (item) => Padding(
+          ...widget.ingredients.map(
+            (ingredient) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: Row(
                 children: [
                   AppNetworkImage(
-                    url: item.$4,
+                    url: widget.imageUrl,
                     fallback: Icons.restaurant_rounded,
                     width: 58,
                     height: 48,
@@ -356,7 +344,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          translateText(context, item.$1),
+                          translateText(context, ingredient),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -367,18 +355,10 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          translateText(context, item.$2),
+                          translateText(context, _ingredientAmount(ingredient)),
                           style: const TextStyle(color: muted, fontSize: 11),
                         ),
                       ],
-                    ),
-                  ),
-                  Text(
-                    translateText(context, item.$3),
-                    style: const TextStyle(
-                      color: navy,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -388,6 +368,11 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
         ],
       ),
     );
+  }
+
+  String _ingredientAmount(String ingredient) {
+    final match = RegExp(r'(\d+\s*g)').firstMatch(ingredient);
+    return match?.group(1) ?? '';
   }
 
   Widget _nutrition() {
