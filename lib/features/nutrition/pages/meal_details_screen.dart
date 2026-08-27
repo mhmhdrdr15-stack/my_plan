@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'core/localization/app_localization.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class MealDetailsScreen extends StatefulWidget {
   const MealDetailsScreen({super.key});

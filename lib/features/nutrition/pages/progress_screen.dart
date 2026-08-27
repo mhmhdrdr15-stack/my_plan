@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'core/navigation/app_bottom_nav.dart';
-import 'core/localization/app_localization.dart';
-import 'log_screen.dart';
-import 'plan_screen.dart';
+import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
+import 'package:my_plan/core/navigation/app_bottom_nav.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/features/food_log/pages/log_screen.dart';
+import 'package:my_plan/features/plan/pages/plan_screen.dart';
 
 class ProgressScreen extends StatefulWidget {
   final bool showBottomNav;

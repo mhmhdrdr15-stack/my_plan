@@ -1,16 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'add_meal_snack_sheet.dart';
-import 'core/navigation/app_bottom_nav.dart';
-import 'core/localization/app_localization.dart';
-import 'log_screen.dart';
-import 'edit_plan_screen.dart';
-import 'edit_daily_targets_page.dart';
-import 'plan_header_actions.dart';
-import 'progress_screen.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
+import 'package:my_plan/features/plan/widgets/add_meal_snack_sheet.dart';
+import 'package:my_plan/core/navigation/app_bottom_nav.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/features/food_log/pages/log_screen.dart';
+import 'package:my_plan/features/plan/pages/edit_plan_screen.dart';
+import 'package:my_plan/features/plan/pages/edit_daily_targets_page.dart';
+import 'package:my_plan/features/plan/widgets/plan_header_actions.dart';
+import 'package:my_plan/features/nutrition/pages/progress_screen.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 enum MealStatus { planned, logged, skipped, overdue }
 

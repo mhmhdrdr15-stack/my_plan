@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_plan/core/state/app_state.dart';
+import 'package:my_plan/core/storage/database_helper.dart';
 
 class HistoryFood {
   final String id;
@@ -34,101 +36,67 @@ class FoodLogHistoryPage extends StatefulWidget {
 class _FoodLogHistoryPageState extends State<FoodLogHistoryPage> {
   String selectedFilter = 'All';
   String searchQuery = '';
+  List<HistoryFood> _foods = const [];
 
-  final foods = const [
-    HistoryFood(
-      id: '1',
-      name: 'Egg',
-      meal: 'Breakfast',
-      time: '08:00 AM',
-      grams: 100,
-      calories: 143,
-      protein: 13,
-      carbs: 1,
-      fat: 10,
-    ),
-    HistoryFood(
-      id: '2',
-      name: 'Whole Wheat Bread',
-      meal: 'Breakfast',
-      time: '08:00 AM',
-      grams: 60,
-      calories: 150,
-      protein: 6,
-      carbs: 25,
-      fat: 2,
-    ),
-    HistoryFood(
-      id: '3',
-      name: 'Chicken Breast',
-      meal: 'Lunch',
-      time: '02:00 PM',
-      grams: 200,
-      calories: 330,
-      protein: 62,
-      carbs: 0,
-      fat: 7,
-    ),
-    HistoryFood(
-      id: '4',
-      name: 'White Rice',
-      meal: 'Lunch',
-      time: '02:00 PM',
-      grams: 150,
-      calories: 195,
-      protein: 4,
-      carbs: 42,
-      fat: 0,
-    ),
-    HistoryFood(
-      id: '5',
-      name: 'Mixed Salad',
-      meal: 'Lunch',
-      time: '02:00 PM',
-      grams: 100,
-      calories: 35,
-      protein: 2,
-      carbs: 7,
-      fat: 0,
-    ),
-    HistoryFood(
-      id: '6',
-      name: 'Apple',
-      meal: 'Snack',
-      time: '05:30 PM',
-      grams: 150,
-      calories: 78,
+  @override
+  void initState() {
+    super.initState();
+    _loadFoods();
+    appState.addListener(_onAppStateChanged);
+  }
+
+  @override
+  void dispose() {
+    appState.removeListener(_onAppStateChanged);
+    super.dispose();
+  }
+
+  void _onAppStateChanged() {
+    if (!mounted) return;
+    _loadFoods();
+  }
+
+  Future<void> _loadFoods() async {
+    final entries = await AppDatabase().loadFoodEntries();
+    if (!mounted) return;
+    setState(() {
+      _foods = entries.map(_toHistoryFood).toList();
+    });
+  }
+
+  HistoryFood _toHistoryFood(FoodEntry entry) {
+    final amountNumber = _parseNumber(entry.amount);
+    final caloriesNumber = _parseNumber(entry.calories);
+    return HistoryFood(
+      id: entry.id.toString(),
+      name: entry.name,
+      meal: entry.mealType,
+      time: _formatTime(entry.createdAt),
+      grams: amountNumber,
+      calories: caloriesNumber,
       protein: 0,
-      carbs: 21,
-      fat: 0,
-    ),
-    HistoryFood(
-      id: '7',
-      name: 'Almonds',
-      meal: 'Snack',
-      time: '05:30 PM',
-      grams: 20,
-      calories: 120,
-      protein: 4,
-      carbs: 4,
-      fat: 10,
-    ),
-    HistoryFood(
-      id: '8',
-      name: 'Tuna',
-      meal: 'Dinner',
-      time: '08:30 PM',
-      grams: 120,
-      calories: 140,
-      protein: 31,
       carbs: 0,
-      fat: 1,
-    ),
-  ];
+      fat: 0,
+    );
+  }
+
+  int _parseNumber(String raw) {
+    final match = RegExp(r'[0-9]+(?:\.[0-9]+)?').firstMatch(raw);
+    if (match == null) return 0;
+    return match.group(0) == null ? 0 : int.tryParse(match.group(0)!) ?? 0;
+  }
+
+  String _formatTime(DateTime dateTime) {
+    final hour = dateTime.hour;
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    final suffix = hour >= 12 ? 'PM' : 'AM';
+    final displayHour = hour % 12 == 0 ? 12 : hour % 12;
+    return '$displayHour:$minute $suffix';
+  }
 
   List<HistoryFood> get filteredFoods {
     final query = searchQuery.trim().toLowerCase();
-    return foods.where((food) {
+    return _foods.where((food) {
       final filterMatches =
           selectedFilter == 'All' || food.meal == selectedFilter;
       final searchMatches =

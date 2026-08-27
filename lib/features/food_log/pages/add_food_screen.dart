@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'core/navigation/app_bottom_nav.dart';
-import 'core/localization/app_localization.dart';
-import 'core/state/app_state.dart';
-import 'log_screen.dart';
-import 'plan_screen.dart';
-import 'progress_screen.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/core/navigation/app_bottom_nav.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/core/state/app_state.dart';
+import 'package:my_plan/features/food_log/pages/log_screen.dart';
+import 'package:my_plan/features/plan/pages/plan_screen.dart';
+import 'package:my_plan/features/nutrition/pages/progress_screen.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class AddFoodScreen extends StatefulWidget {
   final ValueChanged<int>? onNavigate;

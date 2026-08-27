@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'plan_header_actions.dart';
+import 'package:my_plan/features/plan/widgets/plan_header_actions.dart';
 
 class AddMealSnackSheet extends StatefulWidget {
   final void Function(String mealType, TimeOfDay time) onContinue;

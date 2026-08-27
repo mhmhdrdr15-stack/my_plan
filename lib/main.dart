@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'app_localization.dart';
-import 'app_state.dart';
-import 'app_bottom_nav.dart';
-import 'edit_plan_screen.dart';
-import 'edit_breakfast_page.dart';
-import 'log_screen.dart';
-import 'meal_actions_sheet.dart';
-import 'notifications_page.dart';
-import 'plan_screen.dart';
-import 'progress_screen.dart';
-import 'reusable_widgets.dart';
-import 'settings_screen.dart';
-import 'snack_details_screen.dart';
-import 'today_details_screen.dart';
+import 'features/food_log/pages/add_food_screen.dart';
+import 'core/localization/app_localization.dart';
+import 'core/state/app_state.dart';
+import 'core/navigation/app_bottom_nav.dart';
+import 'core/theme/app_colors.dart';
+import 'features/food_log/pages/log_screen.dart';
+import 'features/plan/pages/plan_screen.dart';
+import 'features/nutrition/pages/progress_screen.dart';
+import 'core/widgets/reusable_widgets.dart';
+import 'features/settings/pages/settings_screen.dart';
+import 'features/nutrition/pages/snack_details_screen.dart';
+import 'features/nutrition/pages/today_details_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,43 +33,8 @@ class NutritionApp extends StatelessWidget {
 }
 
 // ===============================================================
-// COLORS / DESIGN TOKENS
-// ===============================================================
-
-class AppColors {
-  static const background = Color(0xFFF7F8FC);
-  static const surface = Colors.white;
-  static const border = Color(0xFFEEF0F4);
-  static const text = Color(0xFF17203A);
-  static const muted = Color(0xFF7B849A);
-  static const muted2 = Color(0xFF9AA2B5);
-  static const primary = Color(0xFF5B35F5);
-  static const primary2 = Color(0xFF6E48FF);
-
-  static const orange = Color(0xFFFF7900);
-  static const orangeTrack = Color(0xFFFFE8DB);
-
-  static const red = Color(0xFFFF3F4A);
-  static const redTrack = Color(0xFFFFE8EB);
-
-  static const blue = Color(0xFF4478FF);
-  static const blueTrack = Color(0xFFEAF0FF);
-
-  static const green = Color(0xFF2CAE62);
-  static const greenTrack = Color(0xFFE9F8EF);
-
-  static const water = Color(0xFF317BFF);
-  static const waterTrack = Color(0xFFE9F0FF);
-
-  static const insightBg = Color(0xFFF2EEFF);
-  static const nextMealBg = Color(0xFFF0FAF4);
-  static const quickAddBg = Color(0xFFFAFBFD);
-}
-
-// ===============================================================
 // HOME
 // ===============================================================
-
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -106,6 +68,7 @@ class _AppShellState extends State<AppShell> {
             selectTab(index);
           },
         ),
+        transitionDuration: const Duration(milliseconds: 160),
         reverseTransitionDuration: const Duration(milliseconds: 120),
         transitionsBuilder: (_, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
@@ -159,27 +122,41 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
                     sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        if (index == 0) return const HeaderSection();
-                        if (index == 1) return const SizedBox(height: 14);
-                        if (index == 2) return const TodayProgressCard();
-                        if (index == 3) return const SizedBox(height: 12);
-                        if (index == 4) {
-                          return AnimatedBuilder(
-                            animation: appState,
-                            builder: (context, _) => InsightWaterSection(
-                              water: appState.water,
-                              waterGoal: appState.waterGoal,
-                              onAddWater: addWater,
+                      delegate: SliverChildListDelegate([
+                        const HeaderSection(),
+                        const SizedBox(height: 14),
+                        const TodayProgressCard(),
+                        const SizedBox(height: 12),
+                        AnimatedBuilder(
+                          animation: appState,
+                          builder: (context, _) => InsightWaterSection(
+                            water: appState.water,
+                            waterGoal: appState.waterGoal,
+                            onAddWater: addWater,
+                          ),
+                        ),
+                        NextMealCard(
+                          mealName: 'Snack',
+                          time: '5:30 PM',
+                          foods: const [
+                            MealFood(name: 'Apple', grams: 150),
+                            MealFood(name: 'Almonds', grams: 20),
+                          ],
+                          calories: 200,
+                          protein: 5,
+                          remainingCalories: 600,
+                          status: NextMealStatus.planned,
+                          imageAsset: 'assets/food/apple.jpg',
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const SnackDetailsScreen(),
                             ),
-                          );
-                        }
-                        if (index == 5) return const SizedBox(height: 12);
-                        if (index == 6) return const NextMealCard();
-                        if (index == 7) return const SizedBox(height: 12);
-                        if (index == 8) return const TodayPlanCard();
-                        return const SizedBox(height: 92);
-                      }, childCount: 10),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const TodayPlanCard(),
+                        const SizedBox(height: 180),
+                      ]),
                     ),
                   ),
                 ],
@@ -207,132 +184,546 @@ class HeaderSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: InkWell(
-              key: const ValueKey('open-settings'),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
-              ),
-              borderRadius: BorderRadius.circular(14),
-              child: Row(
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFE8EEFA),
-                      border: Border.all(color: Colors.white, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x12000000),
-                          blurRadius: 12,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ClipOval(
-                      child: AppNetworkImage(
-                        url:
-                            'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=240&q=80',
-                        fallback: Icons.person_rounded,
-                        width: 52,
-                        height: 52,
-                        radius: 0,
-                      ),
-                    ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  translateText(context, 'Good morning, Mahmoud \u{1F44B}'),
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(width: 11),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          appText(
-                            context,
-                            'Good morning, Mahmoud 👋',
-                            'صباح الخير، محمود 👋',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.text,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w800,
-                            height: 1.05,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          appText(
-                            context,
-                            'Sunday, 23 August',
-                            'الأحد، 23 أغسطس',
-                          ),
-                          style: TextStyle(
-                            color: AppColors.muted,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Semantics(
-            button: true,
-            label: 'Notifications',
-            child: InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const NotificationsPage(),
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  translateText(context, 'Sunday, 23 August'),
+                  style: const TextStyle(
+                    color: AppColors.muted,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            key: const ValueKey('open-settings'),
+            tooltip: translateText(context, 'Settings'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const SettingsScreen(),
               ),
-              borderRadius: BorderRadius.circular(14),
-              child: Stack(
-                clipBehavior: Clip.none,
+            ),
+            icon: const Icon(
+              Icons.settings_outlined,
+              color: AppColors.text,
+            ),
+          ),
+      /*
+      enum NextMealStatus { planned, logged, skipped, overdue }
+
+      class MealFood {
+        final String name;
+        final int grams;
+
+        const MealFood({required this.name, required this.grams});
+      }
+
+      class NextMealCard extends StatefulWidget {
+        final String mealName;
+        final String time;
+        final List<MealFood> foods;
+        final int calories;
+        final int protein;
+        final int remainingCalories;
+        final NextMealStatus status;
+        final String imageAsset;
+        final VoidCallback? onTap;
+
+        const NextMealCard({
+          super.key,
+          required this.mealName,
+          required this.time,
+          required this.foods,
+          required this.calories,
+          required this.protein,
+          required this.remainingCalories,
+          required this.status,
+          required this.imageAsset,
+          this.onTap,
+        });
+
+        @override
+        State<NextMealCard> createState() => _NextMealCardState();
+      }
+
+      class _NextMealCardState extends State<NextMealCard> {
+        bool logged = false;
+
+        String get foodsSummary {
+          if (widget.foods.isEmpty) return 'No foods planned';
+          final visibleFoods = widget.foods.take(2).map(
+            (food) => '${translateText(context, food.name)} ${food.grams}g',
+          );
+          final summary = visibleFoods.join(' · ');
+          return widget.foods.length > 2
+              ? '$summary · +${widget.foods.length - 2} ${translateText(context, 'more')}'
+              : summary;
+        }
+
+        Future<void> _markAsEaten() async {
+          if (logged || widget.status == NextMealStatus.logged) return;
+          setState(() => logged = true);
+          await appState.addFood(
+            name: widget.mealName,
+            mealType: widget.mealName,
+            amount: '1 serving',
+            calories: '${widget.calories} kcal',
+          );
+        }
+
+        @override
+        Widget build(BuildContext context) {
+          final currentStatus = logged ? NextMealStatus.logged : widget.status;
+          final statusColor = switch (currentStatus) {
+            NextMealStatus.planned => const Color(0xFF6B5CE7),
+            NextMealStatus.logged => const Color(0xFF2DAA61),
+            NextMealStatus.skipped => const Color(0xFFFF3E4B),
+            NextMealStatus.overdue => const Color(0xFFE88413),
+          };
+          final statusBackground = switch (currentStatus) {
+            NextMealStatus.planned => const Color(0xFFF0EEFF),
+            NextMealStatus.logged => const Color(0xFFEAF8EF),
+            NextMealStatus.skipped => const Color(0xFFFFEEF0),
+            NextMealStatus.overdue => const Color(0xFFFFF3E7),
+          };
+          final statusIcon = switch (currentStatus) {
+            NextMealStatus.planned => Icons.circle_outlined,
+            NextMealStatus.logged => Icons.check_circle_rounded,
+            NextMealStatus.skipped => Icons.cancel_rounded,
+            NextMealStatus.overdue => Icons.error_rounded,
+          };
+          final statusText = switch (currentStatus) {
+            NextMealStatus.planned => 'Planned',
+            NextMealStatus.logged => 'Logged',
+            NextMealStatus.skipped => 'Skipped',
+            NextMealStatus.overdue => 'Overdue',
+          };
+
+          return GestureDetector(
+            onTap: widget.onTap,
+            child: AppCard(
+              color: currentStatus == NextMealStatus.logged
+                  ? const Color(0xFFF1FAF5)
+                  : Colors.white,
+              padding: const EdgeInsets.fromLTRB(12, 12, 10, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      Text(
+                        translateText(context, 'Next Meal'),
+                        style: const TextStyle(
+                          color: Color(0xFF1F2842),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.chevron_right_rounded, size: 22),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F6F9),
+                          borderRadius: BorderRadius.circular(17),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.asset(
+                          widget.imageAsset,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Center(
+                            child: Icon(Icons.restaurant_rounded, size: 27),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 11),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    translateText(context, widget.mealName),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: AppColors.text,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.time,
+                                  style: const TextStyle(
+                                    color: AppColors.muted,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              foodsSummary,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppColors.muted,
+                                fontSize: 11,
+                                height: 1.35,
+                              ),
+                            ),
+                            const SizedBox(height: 7),
+                            Text(
+                              '${widget.calories} kcal · ${widget.protein} g protein',
+                              style: const TextStyle(
+                                color: Color(0xFF4D5569),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusBackground,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(statusIcon, color: statusColor, size: 13),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    translateText(context, statusText),
+                                    style: TextStyle(
+                                      color: statusColor,
+                                      fontSize: 9.5,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 11),
                   Container(
-                    width: 44,
-                    height: 44,
+                    width: double.infinity,
+                    height: 46,
+                    padding: const EdgeInsets.symmetric(horizontal: 11),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x10000000),
-                          blurRadius: 14,
-                          offset: Offset(0, 5),
+                      color: const Color(0xFFF3F1FF),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bar_chart_rounded, color: Color(0xFF6953E9)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '${widget.remainingCalories} kcal ${translateText(context, 'remaining')}',
+                            style: const TextStyle(
+                              color: Color(0xFF242B40),
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 32,
+                          child: FilledButton.icon(
+                            key: const ValueKey('next-meal-mark-eaten'),
+                            onPressed: currentStatus == NextMealStatus.planned
+                                ? _markAsEaten
+                                : null,
+                            icon: Icon(
+                              currentStatus == NextMealStatus.logged
+                                  ? Icons.check_circle_outline_rounded
+                                  : Icons.check_rounded,
+                              size: 15,
+                            ),
+                            label: Text(
+                              translateText(
+                                context,
+                                currentStatus == NextMealStatus.logged
+                                    ? 'Eaten'
+                                    : 'Mark as eaten',
+                              ),
+                            ),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: const Color(0xFF1FA05C),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              textStyle: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                          ),
                         ),
                       ],
-                    ),
-                    child: const Icon(
-                      Icons.notifications_none_rounded,
-                      color: AppColors.text,
-                      size: 24,
-                    ),
-                  ),
-                  Positioned(
-                    right: -1,
-                    top: -2,
-                    child: Container(
-                      width: 9,
-                      height: 9,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE7002A),
-                        shape: BoxShape.circle,
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+          );
+        }
+      }
+      */
         ],
+      ),
+    );
+  }
+}
+
+enum NextMealStatus { planned, logged, skipped, overdue }
+
+class MealFood {
+  final String name;
+  final int grams;
+
+  const MealFood({required this.name, required this.grams});
+}
+
+class NextMealCard extends StatefulWidget {
+  final String mealName;
+  final String time;
+  final List<MealFood> foods;
+  final int calories;
+  final int protein;
+  final int remainingCalories;
+  final NextMealStatus status;
+  final String imageAsset;
+  final VoidCallback? onTap;
+
+  const NextMealCard({
+    super.key,
+    required this.mealName,
+    required this.time,
+    required this.foods,
+    required this.calories,
+    required this.protein,
+    required this.remainingCalories,
+    required this.status,
+    required this.imageAsset,
+    this.onTap,
+  });
+
+  @override
+  State<NextMealCard> createState() => _NextMealCardState();
+}
+
+class _NextMealCardState extends State<NextMealCard> {
+  bool logged = false;
+
+  Future<void> _markAsEaten() async {
+    if (logged || widget.status == NextMealStatus.logged) return;
+    setState(() => logged = true);
+    await appState.addFood(
+      name: widget.mealName,
+      mealType: widget.mealName,
+      amount: '1 serving',
+      calories: '${widget.calories} kcal',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLogged = logged || widget.status == NextMealStatus.logged;
+    final foodsSummary = widget.foods
+        .take(2)
+        .map((food) => '${translateText(context, food.name)} ${food.grams}g')
+        .join(' · ');
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: AppCard(
+        color: Colors.white,
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  translateText(context, 'Next Meal'),
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.primary,
+                  size: 22,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    widget.imageAsset,
+                    width: 72,
+                    height: 72,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const SizedBox(
+                      width: 72,
+                      height: 72,
+                      child: Icon(Icons.restaurant_rounded),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              translateText(context, widget.mealName),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                          Text(
+                            widget.time,
+                            style: const TextStyle(
+                              color: AppColors.muted,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(foodsSummary, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.muted, fontSize: 11)),
+                      const SizedBox(height: 6),
+                      Text('${widget.calories} kcal · ${widget.protein} g protein', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 7),
+                      SmallStatus(
+                        text: translateText(context, isLogged ? 'Logged' : 'Planned'),
+                        background: isLogged ? const Color(0xFFEAF8EF) : const Color(0xFFF0EEFF),
+                        foreground: isLogged ? const Color(0xFF2DAA61) : const Color(0xFF6B5CE7),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 11),
+            Container(
+              padding: const EdgeInsets.fromLTRB(11, 10, 11, 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF6F3FF),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.bolt_rounded,
+                        color: AppColors.primary,
+                        size: 19,
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          '${widget.remainingCalories} kcal ${translateText(context, 'remaining')}',
+                          style: const TextStyle(
+                            color: AppColors.text,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${((widget.remainingCalories / 1800) * 100).round()}%',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                    const SizedBox(height: 9),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 36,
+                      child: FilledButton.icon(
+                        key: const ValueKey('next-meal-mark-eaten'),
+                        onPressed: isLogged ? null : _markAsEaten,
+                        icon: Icon(
+                          isLogged
+                              ? Icons.check_circle_outline_rounded
+                              : Icons.check_rounded,
+                          size: 16,
+                        ),
+                        label: Text(
+                          translateText(context, isLogged ? 'Eaten' : 'Mark as eaten'),
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF2DAA61),
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          textStyle: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -363,13 +754,12 @@ class TodayProgressCard extends StatelessWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const TodayDetailsScreen(),
-                    ),
-                  );
-                },
+                key: const ValueKey('today-progress-details'),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const TodayDetailsScreen(),
+                  ),
+                ),
                 child: Row(
                   children: [
                     Text(
@@ -420,14 +810,7 @@ class TodayProgressCard extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(12),
-              onTap: () => ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text('Nutrient details are coming soon'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                ),
+              onTap: () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -888,14 +1271,7 @@ class InsightCard extends StatelessWidget {
             height: 36,
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () => ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  const SnackBar(
-                    content: Text('Suggestions are coming soon'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                ),
+              onPressed: () {},
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
                 side: const BorderSide(color: Color(0xFFE1D9FF)),
@@ -946,13 +1322,14 @@ class FoodMiniIcon extends StatelessWidget {
         color: const Color(0xFFF7F7FB),
         shape: BoxShape.circle,
       ),
-      child: AppNetworkImage(
-        url: imageUrl,
-        fallback: icon,
-        width: size,
-        height: size,
-        radius: size / 2,
-        fit: BoxFit.cover,
+      child: ClipOval(
+        child: Image.network(
+          imageUrl,
+          cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              Icon(icon, color: color, size: size * .55),
+        ),
       ),
     );
   }
@@ -1138,17 +1515,39 @@ class WaterActionButton extends StatelessWidget {
 // NEXT MEAL
 // ===============================================================
 
-class NextMealCard extends StatelessWidget {
+/*
+class NextMealCard extends StatefulWidget {
   const NextMealCard({super.key});
+
+  @override
+  State<NextMealCard> createState() => _NextMealCardState();
+}
+
+class _NextMealCardState extends State<NextMealCard> {
+  bool logged = false;
+
+  Future<void> _markAsEaten() async {
+    if (logged) return;
+    setState(() => logged = true);
+    await appState.addFood(
+      name: 'Lunch',
+      mealType: 'Lunch',
+      amount: '1 serving',
+      calories: '620 kcal',
+    );
+  }
+
+  void _openDetails() {
+    if (logged) return;
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const MealDetailsScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const SnackDetailsScreen()),
-        );
-      },
+      onTap: _openDetails,
       borderRadius: BorderRadius.circular(20),
       child: AppCard(
         color: AppColors.nextMealBg,
@@ -1191,7 +1590,7 @@ class NextMealCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    translateText(context, 'Snack'),
+                    translateText(context, 'Lunch'),
                     style: TextStyle(
                       color: AppColors.text,
                       fontSize: 17,
@@ -1202,7 +1601,7 @@ class NextMealCard extends StatelessWidget {
                   Text(
                     translateText(
                       context,
-                      '5:30 PM  •  200 kcal  •  5g protein',
+                      '2:00 PM  •  620 kcal  •  52g protein  •  Chicken, rice, salad',
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1213,10 +1612,34 @@ class NextMealCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 5),
-                  SmallStatus(
-                    text: translateText(context, 'Logged'),
-                    background: Color(0xFFF0F1F4),
-                    foreground: Color(0xFF646C80),
+                  SizedBox(
+                    height: 27,
+                    child: FilledButton.icon(
+                      key: const ValueKey('next-meal-mark-eaten'),
+                      onPressed: logged ? null : _markAsEaten,
+                      icon: Icon(
+                        logged
+                            ? Icons.check_circle_outline_rounded
+                            : Icons.check_rounded,
+                        size: 14,
+                      ),
+                      label: Text(
+                        translateText(
+                          context,
+                          logged ? 'Eaten' : 'Mark as eaten',
+                        ),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF1FA05C),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        textStyle: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -1257,6 +1680,8 @@ class NextMealCard extends StatelessWidget {
   }
 }
 
+*/
+
 // ===============================================================
 // TODAY'S PLAN
 // ===============================================================
@@ -1282,11 +1707,7 @@ class TodayPlanCard extends StatelessWidget {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const EditPlanScreen(),
-                  ),
-                ),
+                onTap: () {},
                 child: Row(
                   children: [
                     Icon(
@@ -1385,65 +1806,6 @@ class MealRow extends StatelessWidget {
     required this.nutrition,
     required this.status,
   });
-
-  MealActionStatus get actionStatus => switch (status) {
-    MealStatus.logged => MealActionStatus.logged,
-    MealStatus.planned => MealActionStatus.planned,
-    MealStatus.skipped => MealActionStatus.skipped,
-  };
-
-  void showActions(BuildContext context) {
-    MealActionsSheet.show(
-      context: context,
-      mealName: title,
-      mealTime: time,
-      nutrition: nutrition,
-      status: actionStatus,
-      onEditMeal: () {
-        if (title == 'Breakfast') {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => const EditBreakfastPage()),
-          );
-        }
-      },
-      onChangeTime: () async {
-        final selected = await showTimePicker(
-          context: context,
-          initialTime: _parseMealTime(time),
-        );
-        if (selected != null && context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('$title time changed')));
-        }
-      },
-      onMoveMeal: () => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Choose a day to move $title'))),
-      onViewMeal: () => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Opening $title details'))),
-      onRemoveFromPlan: () => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('$title removed from plan'))),
-      onLogMeal: () => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('$title logged'))),
-      onSkipMeal: () => ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('$title skipped'))),
-    );
-  }
-
-  TimeOfDay _parseMealTime(String value) {
-    final parts = value.split(' ');
-    final clock = parts.first.split(':');
-    var hour = int.tryParse(clock.first) ?? 12;
-    final minute = int.tryParse(clock.last) ?? 0;
-    if (parts.length > 1 && parts.last == 'PM' && hour != 12) hour += 12;
-    if (parts.length > 1 && parts.last == 'AM' && hour == 12) hour = 0;
-    return TimeOfDay(hour: hour, minute: minute);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1568,14 +1930,10 @@ class MealRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 3),
-          IconButton(
-            onPressed: () => showActions(context),
-            tooltip: translateText(context, 'More options'),
-            icon: const Icon(
-              Icons.more_horiz_rounded,
-              size: 20,
-              color: Color(0xFF727A8B),
-            ),
+          const Icon(
+            Icons.more_horiz_rounded,
+            color: Color(0xFF727A8B),
+            size: 19,
           ),
         ],
       ),

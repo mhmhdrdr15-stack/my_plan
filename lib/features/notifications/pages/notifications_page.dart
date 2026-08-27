@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'notification_model.dart';
+import 'package:my_plan/features/notifications/models/notification_model.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'edit_breakfast_page.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/features/plan/pages/edit_breakfast_page.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class EditTodayPlanPage extends StatelessWidget {
   const EditTodayPlanPage({super.key});

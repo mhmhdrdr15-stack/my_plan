@@ -4,9 +4,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'core/localization/app_localization.dart';
-import 'edit_daily_targets_page.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/features/plan/pages/edit_daily_targets_page.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class TodayDetailsScreen extends StatefulWidget {
   const TodayDetailsScreen({super.key});

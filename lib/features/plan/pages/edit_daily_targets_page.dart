@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'core/localization/app_localization.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 
 class EditDailyTargetsPage extends StatefulWidget {
   final int initialCalories;

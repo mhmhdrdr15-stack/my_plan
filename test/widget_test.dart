@@ -7,12 +7,17 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:my_plan/app_localization.dart';
 import 'package:my_plan/app_state.dart';
 import 'package:my_plan/main.dart';
 
 void main() {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
   testWidgets('opens today details from the dashboard', (
     WidgetTester tester,
   ) async {
@@ -140,5 +145,118 @@ void main() {
 
     expect(find.text('تفاصيل اليوم'), findsOneWidget);
     expect(find.text(' السعرات الحرارية '), findsNothing);
+    expect(
+      tester.getCenter(find.byKey(const ValueKey('today-details-back'))).dx,
+      lessThan(
+        tester
+            .getCenter(find.byKey(const ValueKey('today-details-calendar')))
+            .dx,
+      ),
+    );
+  });
+
+  testWidgets('today details switches between adjacent days', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+    await tester.tap(find.text('Details'));
+    await tester.pumpAndSettle();
+
+    final today = DateTime.now();
+    final todayLabel = DateFormat('EEEE, d MMMM', 'en').format(today);
+    final previousLabel = DateFormat(
+      'EEEE, d MMMM',
+      'en',
+    ).format(today.subtract(const Duration(days: 1)));
+    final nextLabel = DateFormat(
+      'EEEE, d MMMM',
+      'en',
+    ).format(today.add(const Duration(days: 1)));
+
+    expect(find.text(todayLabel), findsOneWidget);
+    final previousButton = find.byKey(
+      const ValueKey('today-details-previous-day'),
+    );
+    final nextButton = find.byKey(const ValueKey('today-details-next-day'));
+    final previousCenter = tester.getCenter(previousButton);
+    final nextCenter = tester.getCenter(nextButton);
+    expect(tester.getSize(previousButton), const Size(40, 40));
+    expect(tester.getSize(nextButton), const Size(40, 40));
+
+    await tester.tap(previousButton);
+    await tester.pump();
+    expect(find.text(previousLabel), findsOneWidget);
+    expect(tester.getCenter(previousButton), previousCenter);
+    expect(tester.getCenter(nextButton), nextCenter);
+
+    await tester.tap(nextButton);
+    await tester.pump();
+    expect(find.text(todayLabel), findsOneWidget);
+    await tester.tap(nextButton);
+    await tester.pump();
+    expect(find.text(nextLabel), findsOneWidget);
+  });
+
+  testWidgets('today details opens the calendar picker', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+    await tester.tap(find.text('Details'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('today-details-calendar')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DatePickerDialog), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.byType(DatePickerDialog), findsNothing);
+  });
+
+  testWidgets('today details confirms before saving calorie target', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+    await tester.tap(find.text('Details'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('today-details-edit-calories')));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit Daily Targets'), findsOneWidget);
+    expect(find.text('Edit calorie target?'), findsNothing);
+
+    await tester.scrollUntilVisible(
+      find.text('Save Targets'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Save Targets'));
+    await tester.pumpAndSettle();
+    expect(find.text('Save calorie changes?'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit Daily Targets'), findsOneWidget);
+  });
+
+  testWidgets('macro targets action opens the editor', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('en');
+    await tester.pumpWidget(const NutritionApp());
+    await tester.tap(find.text('Details'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('today-details-edit-macros')),
+      findsOneWidget,
+    );
+    expect(find.text('View targets'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('today-details-edit-macros')));
+    await tester.pumpAndSettle();
+    expect(find.text('Edit Daily Targets'), findsOneWidget);
   });
 }

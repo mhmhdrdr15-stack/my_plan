@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'core/localization/app_localization.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class SnackDetailsScreen extends StatelessWidget {
   const SnackDetailsScreen({super.key});

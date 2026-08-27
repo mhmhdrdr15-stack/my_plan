@@ -1,16 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'core/navigation/app_bottom_nav.dart';
-import 'core/localization/app_localization.dart';
-import 'core/state/app_state.dart';
-import 'core/storage/database_helper.dart';
-import 'features/food_log/widgets/log_sync_button.dart';
-import 'features/food_log/pages/food_log_history_page.dart';
-import 'plan_screen.dart';
-import 'progress_screen.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
+import 'package:my_plan/core/navigation/app_bottom_nav.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
+import 'package:my_plan/core/state/app_state.dart';
+import 'package:my_plan/core/storage/database_helper.dart';
+import 'package:my_plan/features/food_log/widgets/log_sync_button.dart';
+import 'package:my_plan/features/food_log/pages/food_log_history_page.dart';
+import 'package:my_plan/features/plan/pages/plan_screen.dart';
+import 'package:my_plan/features/nutrition/pages/progress_screen.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class LogFoodScreen extends StatefulWidget {
   final bool showBottomNav;

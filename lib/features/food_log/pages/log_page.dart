@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../log_screen.dart';
+import 'package:my_plan/features/food_log/pages/log_screen.dart';
 
 /// Compatibility entry point for the Log screen module.
 class LogPage extends StatelessWidget {

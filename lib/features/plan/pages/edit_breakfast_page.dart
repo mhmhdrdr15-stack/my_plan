@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'add_food_screen.dart';
-import 'core/widgets/reusable_widgets.dart';
+import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
+import 'package:my_plan/core/widgets/reusable_widgets.dart';
 
 class EditBreakfastPage extends StatefulWidget {
   const EditBreakfastPage({super.key});
