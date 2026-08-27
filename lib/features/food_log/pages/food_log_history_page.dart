@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/core/state/app_state.dart';
 import 'package:my_plan/core/storage/database_helper.dart';
 import 'package:my_plan/data/shared/models/food_entry.dart';
@@ -119,8 +120,8 @@ class _FoodLogHistoryPageState extends State<FoodLogHistoryPage> {
       appBar: AppBar(
         backgroundColor: HistoryColors.background,
         elevation: 0,
-        title: const Text(
-          'Food Log History',
+        title: Text(
+          translateText(context, 'Food Log History'),
           style: TextStyle(
             color: HistoryColors.text,
             fontSize: 20,
@@ -313,8 +314,8 @@ class _FoodLogHistoryPageState extends State<FoodLogHistoryPage> {
 
   Widget _search() => TextField(
     onChanged: (value) => setState(() => searchQuery = value),
-    decoration: const InputDecoration(
-      hintText: 'Search logged food...',
+    decoration: InputDecoration(
+      hintText: translateText(context, 'Search logged food...'),
       prefixIcon: Icon(
         Icons.search_rounded,
         color: HistoryColors.muted,

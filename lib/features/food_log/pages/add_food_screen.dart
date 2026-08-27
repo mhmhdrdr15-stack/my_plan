@@ -88,7 +88,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('$feature is coming soon'),
+          content: Text(comingSoonText(context, feature)),
           behavior: SnackBarBehavior.floating,
         ),
       );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/features/notifications/models/notification_model.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -92,8 +93,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
         title: Row(
           children: [
-            const Text(
-              'Notifications',
+            Text(
+              translateText(context, 'Notifications'),
               style: TextStyle(
                 color: Color(0xFF17203A),
                 fontSize: 21,
@@ -124,8 +125,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
           if (unreadCount > 0)
             TextButton(
               onPressed: markAllAsRead,
-              child: const Text(
-                'Mark all read',
+              child: Text(
+                translateText(context, 'Mark all read'),
                 style: TextStyle(
                   color: Color(0xFF5B35F5),
                   fontSize: 12,
@@ -142,7 +143,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 30),
               children: [
-                _buildSectionTitle('Today'),
+                _buildSectionTitle(translateText(context, 'Today')),
                 const SizedBox(height: 8),
                 ...notifications
                     .asMap()
@@ -154,7 +155,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     )
                     .map((entry) => _notificationItem(entry)),
                 const SizedBox(height: 11),
-                _buildSectionTitle('Earlier'),
+                _buildSectionTitle(translateText(context, 'Earlier')),
                 const SizedBox(height: 8),
                 ...notifications
                     .asMap()
@@ -286,7 +287,7 @@ class NotificationCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            notification.title,
+                                            translateText(context, notification.title),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -311,7 +312,7 @@ class NotificationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      notification.message,
+                      translateText(context, notification.message),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -323,7 +324,7 @@ class NotificationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 7),
                     Text(
-                      notification.time,
+                      translateText(context, notification.time),
                       style: const TextStyle(
                         color: Color(0xFFA0A8B8),
                         fontSize: 9.5,
@@ -372,8 +373,8 @@ class EmptyNotifications extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            const Text(
-              "You're all caught up",
+            Text(
+              translateText(context, "You're all caught up"),
               style: TextStyle(
                 color: Color(0xFF17203A),
                 fontSize: 18,
@@ -381,8 +382,8 @@ class EmptyNotifications extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 7),
-            const Text(
-              'No new notifications.',
+            Text(
+              translateText(context, 'No new notifications.'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF7B849A),

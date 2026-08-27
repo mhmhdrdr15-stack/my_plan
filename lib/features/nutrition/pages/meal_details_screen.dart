@@ -56,7 +56,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('$action is coming soon'),
+          content: Text(comingSoonText(context, action)),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -488,7 +488,7 @@ class _MealDetailsScreenState extends State<MealDetailsScreen> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
-                content: Text('$label is coming soon'),
+                content: Text(comingSoonText(context, label)),
                 behavior: SnackBarBehavior.floating,
               ),
             ),

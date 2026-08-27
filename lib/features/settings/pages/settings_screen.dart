@@ -298,8 +298,8 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () => ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                const SnackBar(
-                  content: Text('Premium plan preview is coming soon'),
+                SnackBar(
+                  content: Text(translateText(context, 'Premium plan preview is coming soon')),
                   behavior: SnackBarBehavior.floating,
                 ),
               ),

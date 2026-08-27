@@ -30,7 +30,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('$feature is coming soon'),
+          content: Text(comingSoonText(context, feature)),
           behavior: SnackBarBehavior.floating,
         ),
       );

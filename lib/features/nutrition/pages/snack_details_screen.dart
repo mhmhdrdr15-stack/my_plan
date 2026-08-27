@@ -858,7 +858,7 @@ class _SecondaryButton extends StatelessWidget {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              content: Text('$label is coming soon'),
+              content: Text(comingSoonText(context, label)),
               behavior: SnackBarBehavior.floating,
             ),
           ),
