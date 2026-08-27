@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'app_router.dart';
 import 'package:my_plan/core/navigation/app_bottom_nav.dart';
 import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
-import 'package:my_plan/features/food_log/pages/log_screen.dart';
-import 'package:my_plan/features/home/pages/home_screen.dart';
-import 'package:my_plan/features/nutrition/pages/progress_screen.dart';
-import 'package:my_plan/features/plan/pages/plan_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -16,16 +13,11 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int currentTab = 0;
 
-  final screens = <Widget?>[const HomeScreen(), null, null, null];
+  final screens = <Widget?>[AppRouter.screenForTab(0), null, null, null];
 
   void selectTab(int index) {
     if (screens[index] == null) {
-      screens[index] = switch (index) {
-        1 => const PlanScreen(showBottomNav: false),
-        2 => const LogFoodScreen(showBottomNav: false),
-        3 => const ProgressScreen(showBottomNav: false),
-        _ => const HomeScreen(),
-      };
+      screens[index] = AppRouter.screenForTab(index);
     }
     setState(() => currentTab = index);
   }
