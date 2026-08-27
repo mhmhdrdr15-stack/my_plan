@@ -634,7 +634,13 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
               height: 52,
               child: FilledButton.icon(
                 onPressed: () async {
-                  await appState.addFood();
+                  await appState.addFood(
+                    name: selectedFood.name,
+                    mealType: 'Lunch',
+                    amount: '$servingSize g',
+                    calories:
+                        '${selectedFood.calories.replaceFirst(' kcal', '')} kcal',
+                  );
                   if (mounted) Navigator.pop(context);
                 },
                 icon: const Icon(Icons.check_rounded),

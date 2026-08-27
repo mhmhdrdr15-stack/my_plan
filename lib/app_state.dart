@@ -1,47 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'database_helper.dart';
 
 class AppState extends ChangeNotifier {
-  static const _waterKey = 'water_litres';
-  static const _localeKey = 'locale';
-  static const _loggedFoodsKey = 'logged_foods';
+  final AppDatabase _database = AppDatabase();
 
   double water = 1.4;
   double waterGoal = 2.5;
   Locale locale = const Locale('ar');
   int loggedFoods = 4;
-  SharedPreferences? _preferences;
 
   Future<void> load() async {
-    _preferences = await SharedPreferences.getInstance();
+    await _database.init();
 
-    final savedWater = _preferences?.getDouble(_waterKey);
-    if (savedWater != null) water = savedWater;
+    water = await _database.loadWater();
+    waterGoal = await _database.loadWaterGoal();
 
-    final savedLocale = _preferences?.getString(_localeKey);
-    if (savedLocale != null) locale = Locale(savedLocale);
+    final savedLocale = await _database.loadLocale();
+    if (savedLocale != null) {
+      locale = Locale(savedLocale);
+    }
 
-    final savedLoggedFoods = _preferences?.getInt(_loggedFoodsKey);
-    if (savedLoggedFoods != null) loggedFoods = savedLoggedFoods;
-
+    loggedFoods = await _database.loadLoggedFoods();
     notifyListeners();
   }
 
-  void addWater(double amount) {
+  Future<void> addWater(double amount) async {
     water = (water + amount).clamp(0, waterGoal).toDouble();
-    _preferences?.setDouble(_waterKey, water);
+    await _database.saveWater(water);
     notifyListeners();
   }
 
   Future<void> setLocale(Locale value) async {
     locale = value;
-    await _preferences?.setString(_localeKey, value.languageCode);
+    await _database.saveLocale(value.languageCode);
     notifyListeners();
   }
 
-  Future<void> addFood() async {
+  Future<void> addFood({
+    String name = 'Food',
+    String mealType = 'Lunch',
+    String amount = '100 g',
+    String calories = '100 kcal',
+  }) async {
     loggedFoods++;
-    await _preferences?.setInt(_loggedFoodsKey, loggedFoods);
+    await _database.saveFoodEntry(
+      name: name,
+      mealType: mealType,
+      amount: amount,
+      calories: calories,
+    );
+    await _database.saveLoggedFoods(loggedFoods);
     notifyListeners();
   }
 }

@@ -128,4 +128,17 @@ void main() {
     appLocale.value = const Locale('en');
     appState.locale = const Locale('en');
   });
+
+  testWidgets('today details screen translates when locale switches', (
+    WidgetTester tester,
+  ) async {
+    appLocale.value = const Locale('ar');
+    await tester.pumpWidget(const NutritionApp());
+
+    await tester.tap(find.text('التفاصيل'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('تفاصيل اليوم'), findsOneWidget);
+    expect(find.text(' السعرات الحرارية '), findsNothing);
+  });
 }

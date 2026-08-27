@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'app_localization.dart';
 import 'reusable_widgets.dart';
 
 class SnackDetailsScreen extends StatelessWidget {
@@ -41,12 +42,17 @@ class SnackDetailsScreen extends StatelessWidget {
                   if (index == 8) {
                     return _PrimaryButton(
                       icon: Icons.check_circle_outline,
-                      label: 'Log Meal',
+                      label: translateText(context, 'Log Meal'),
                       onTap: () => ScaffoldMessenger.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
-                          const SnackBar(
-                            content: Text('Meal logging is coming soon'),
+                          SnackBar(
+                            content: Text(
+                              translateText(
+                                context,
+                                'Meal logging is coming soon',
+                              ),
+                            ),
                             behavior: SnackBarBehavior.floating,
                           ),
                         ),
@@ -81,23 +87,23 @@ class _SnackHeader extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                tooltip: 'Back',
+                tooltip: translateText(context, 'Back'),
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(CupertinoIcons.back, size: 24),
               ),
-              const Expanded(
+              Expanded(
                 child: Column(
                   children: [
                     Text(
-                      'Snack',
-                      style: TextStyle(
+                      translateText(context, 'Snack'),
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: SnackDetailsScreen.text,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
+                    const SizedBox(height: 4),
+                    const Text(
                       '5:30 PM',
                       style: TextStyle(
                         fontSize: 14,
@@ -109,12 +115,14 @@ class _SnackHeader extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'More',
+                tooltip: translateText(context, 'More options'),
                 onPressed: () => ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
-                    const SnackBar(
-                      content: Text('More actions are coming soon'),
+                    SnackBar(
+                      content: Text(
+                        translateText(context, 'More actions are coming soon'),
+                      ),
                       behavior: SnackBarBehavior.floating,
                     ),
                   ),
@@ -129,18 +137,18 @@ class _SnackHeader extends StatelessWidget {
               color: const Color(0xFFF0E8FF),
               borderRadius: BorderRadius.circular(18),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   CupertinoIcons.calendar,
                   color: SnackDetailsScreen.purple,
                   size: 19,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  'Planned',
-                  style: TextStyle(
+                  translateText(context, 'Planned'),
+                  style: const TextStyle(
                     fontSize: 12,
                     color: SnackDetailsScreen.purple,
                     fontWeight: FontWeight.w600,
@@ -200,9 +208,9 @@ class _SnackOverview extends StatelessWidget {
             final title = Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Snack',
-                  style: TextStyle(
+                Text(
+                  translateText(context, 'Snack'),
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: SnackDetailsScreen.text,

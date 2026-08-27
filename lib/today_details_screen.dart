@@ -1,7 +1,8 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'app_localization.dart';
 import 'reusable_widgets.dart';
 
 class TodayDetailsScreen extends StatelessWidget {
@@ -92,15 +93,15 @@ class _Header extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  tooltip: 'Back',
+                  tooltip: translateText(context, 'Back'),
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(CupertinoIcons.back, size: 24),
                 ),
-                const Expanded(
+                Expanded(
                   child: Center(
                     child: Text(
-                      "Today's Details",
-                      style: TextStyle(
+                      translateText(context, "Today's Details"),
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -108,12 +109,14 @@ class _Header extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Calendar',
+                  tooltip: translateText(context, 'Calendar'),
                   onPressed: () => ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
-                      const SnackBar(
-                        content: Text('Calendar is coming soon'),
+                      SnackBar(
+                        content: Text(
+                          translateText(context, 'Calendar is coming soon'),
+                        ),
                         behavior: SnackBarBehavior.floating,
                       ),
                     ),
@@ -123,26 +126,30 @@ class _Header extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(CupertinoIcons.chevron_left, size: 17),
-              SizedBox(width: 12),
-              Icon(CupertinoIcons.calendar, size: 17, color: Color(0xFF424852)),
-              SizedBox(width: 7),
+              const Icon(CupertinoIcons.chevron_left, size: 17),
+              const SizedBox(width: 12),
+              const Icon(
+                CupertinoIcons.calendar,
+                size: 17,
+                color: Color(0xFF424852),
+              ),
+              const SizedBox(width: 7),
               Flexible(
                 child: Text(
-                  'Sunday, 23 August',
+                  translateText(context, 'Sunday, 23 August'),
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 15,
                     color: Color(0xFF565D68),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              SizedBox(width: 12),
-              Icon(CupertinoIcons.chevron_right, size: 17),
+              const SizedBox(width: 12),
+              const Icon(CupertinoIcons.chevron_right, size: 17),
             ],
           ),
         ],
@@ -191,9 +198,12 @@ class _CaloriesCard extends StatelessWidget {
           final summary = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Calories',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              Text(
+                translateText(context, 'Calories'),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 12),
               const FittedBox(
@@ -223,9 +233,9 @@ class _CaloriesCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 9),
-              const Text(
-                '600 kcal remaining',
-                style: TextStyle(
+              Text(
+                translateText(context, '600 kcal remaining'),
+                style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: TodayDetailsScreen.purple,
@@ -241,25 +251,31 @@ class _CaloriesCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 9),
-              const Text(
-                '67% of daily goal',
-                style: TextStyle(fontSize: 11, color: Color(0xFF616874)),
+              Text(
+                translateText(context, '67% of daily goal'),
+                style: const TextStyle(fontSize: 11, color: Color(0xFF616874)),
               ),
             ],
           );
-          const metrics = Row(
+          final metrics = Row(
             children: [
               Expanded(
-                child: _Metric(label: 'Consumed', value: '1,200 kcal'),
+                child: _Metric(
+                  label: translateText(context, 'Consumed'),
+                  value: '1,200 kcal',
+                ),
               ),
-              _Divider(),
-              Expanded(
-                child: _Metric(label: 'Goal', value: '1,800 kcal'),
-              ),
-              _Divider(),
+              const _Divider(),
               Expanded(
                 child: _Metric(
-                  label: 'Remaining',
+                  label: translateText(context, 'Goal'),
+                  value: '1,800 kcal',
+                ),
+              ),
+              const _Divider(),
+              Expanded(
+                child: _Metric(
+                  label: translateText(context, 'Remaining'),
                   value: '600 kcal',
                   color: TodayDetailsScreen.purple,
                 ),
@@ -421,22 +437,22 @@ class _MacrosCard extends StatelessWidget {
   Widget build(BuildContext context) => _Card(
     child: Column(
       children: [
-        const Row(
+        Row(
           children: [
             Text(
-              'Macronutrients',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              translateText(context, 'Macronutrients'),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
             ),
-            Spacer(),
+            const Spacer(),
             Text(
-              'View targets',
-              style: TextStyle(
+              translateText(context, 'View targets'),
+              style: const TextStyle(
                 fontSize: 11,
                 color: TodayDetailsScreen.purple,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            Icon(
+            const Icon(
               CupertinoIcons.chevron_right,
               size: 18,
               color: TodayDetailsScreen.purple,
@@ -446,31 +462,31 @@ class _MacrosCard extends StatelessWidget {
         const SizedBox(height: 14),
         LayoutBuilder(
           builder: (context, constraints) {
-            final items = const [
+            final items = [
               _MacroData(
-                'Protein',
+                translateText(context, 'Protein'),
                 '85 / 130 g',
                 '65%',
                 '45 g remaining',
-                .65,
+                0.65,
                 TodayDetailsScreen.green,
                 Icons.fitness_center_rounded,
               ),
               _MacroData(
-                'Carbs',
+                translateText(context, 'Carbs'),
                 '120 / 180 g',
                 '67%',
                 '60 g remaining',
-                .67,
+                0.67,
                 TodayDetailsScreen.blue,
                 Icons.grain_rounded,
               ),
               _MacroData(
-                'Fat',
+                translateText(context, 'Fats'),
                 '40 / 60 g',
                 '67%',
                 '20 g remaining',
-                .67,
+                0.67,
                 TodayDetailsScreen.orange,
                 Icons.water_drop_outlined,
               ),
@@ -596,18 +612,21 @@ class _OtherNutrientsCard extends StatelessWidget {
     padding: const EdgeInsets.fromLTRB(16, 14, 12, 8),
     child: Column(
       children: [
-        const Row(
+        Row(
           children: [
             Text(
-              'Other Nutrients',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              translateText(context, 'Other Nutrients'),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
             ),
-            Spacer(),
+            const Spacer(),
             Text(
-              'Learn more',
-              style: TextStyle(fontSize: 11, color: TodayDetailsScreen.purple),
+              translateText(context, 'Learn more'),
+              style: const TextStyle(
+                fontSize: 11,
+                color: TodayDetailsScreen.purple,
+              ),
             ),
-            Icon(
+            const Icon(
               CupertinoIcons.chevron_right,
               size: 16,
               color: TodayDetailsScreen.purple,
@@ -615,38 +634,38 @@ class _OtherNutrientsCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        for (final nutrient in const [
+        for (final nutrient in [
           (
-            'Fiber',
+            translateText(context, 'Fiber'),
             '18 / 30 g',
-            .60,
+            0.60,
             TodayDetailsScreen.green,
             Icons.spa_outlined,
-            'Good',
+            translateText(context, 'Good'),
           ),
           (
-            'Sugar',
+            translateText(context, 'Sugar'),
             '42 / 50 g',
-            .84,
+            0.84,
             TodayDetailsScreen.purple,
             Icons.hexagon_outlined,
-            'Moderate',
+            translateText(context, 'Moderate'),
           ),
           (
-            'Saturated Fat',
+            translateText(context, 'Saturated Fat'),
             '12 / 20 g',
-            .60,
-            Color(0xFF7042F1),
+            0.60,
+            const Color(0xFF7042F1),
             Icons.water_drop_outlined,
-            'Moderate',
+            translateText(context, 'Moderate'),
           ),
           (
-            'Sodium',
+            translateText(context, 'Sodium'),
             '1,450 / 2,300 mg',
-            .63,
+            0.63,
             TodayDetailsScreen.blue,
             Icons.science_outlined,
-            'Good',
+            translateText(context, 'Good'),
           ),
         ]) ...[_NutrientRow(nutrient: nutrient), const Divider(height: 1)],
       ],
@@ -699,7 +718,7 @@ class _NutrientRow extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 7),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: nutrient.$6 == 'Good'
+            color: nutrient.$6 == translateText(context, 'Good')
                 ? const Color(0xFFEFF9F0)
                 : const Color(0xFFFFF6E6),
             borderRadius: BorderRadius.circular(17),
@@ -708,7 +727,7 @@ class _NutrientRow extends StatelessWidget {
             nutrient.$6,
             style: TextStyle(
               fontSize: 10,
-              color: nutrient.$6 == 'Good'
+              color: nutrient.$6 == translateText(context, 'Good')
                   ? TodayDetailsScreen.green
                   : TodayDetailsScreen.orange,
             ),
@@ -727,9 +746,9 @@ class _CaloriesByMealCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Calories by Meal',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        Text(
+          translateText(context, 'Calories by Meal'),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
         Row(
@@ -740,30 +759,46 @@ class _CaloriesByMealCard extends StatelessWidget {
               child: CustomPaint(painter: _DonutPainter()),
             ),
             const SizedBox(width: 5),
-            const Expanded(
+            Expanded(
               child: Column(
                 children: [
-                  _Legend(Color(0xFF49B94E), 'Breakfast', '420 kcal'),
-                  SizedBox(height: 4),
-                  _Legend(Color(0xFF2B72DD), 'Lunch', '620 kcal'),
-                  SizedBox(height: 4),
-                  _Legend(Color(0xFFFF9917), 'Snack', '160 kcal'),
-                  SizedBox(height: 4),
-                  _Legend(Color(0xFF8C47E5), 'Dinner', '0 kcal'),
+                  _Legend(
+                    Color(0xFF49B94E),
+                    translateText(context, 'Breakfast'),
+                    '420 kcal',
+                  ),
+                  const SizedBox(height: 4),
+                  _Legend(
+                    Color(0xFF2B72DD),
+                    translateText(context, 'Lunch'),
+                    '620 kcal',
+                  ),
+                  const SizedBox(height: 4),
+                  _Legend(
+                    Color(0xFFFF9917),
+                    translateText(context, 'Snack'),
+                    '160 kcal',
+                  ),
+                  const SizedBox(height: 4),
+                  _Legend(
+                    Color(0xFF8C47E5),
+                    translateText(context, 'Dinner'),
+                    '0 kcal',
+                  ),
                 ],
               ),
             ),
           ],
         ),
         const Divider(height: 28),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Total',
-              style: TextStyle(fontSize: 14, color: Color(0xFF5B626D)),
+              translateText(context, 'Total'),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF5B626D)),
             ),
-            Text(
+            const Text(
               '1,200 kcal',
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
@@ -806,9 +841,9 @@ class _HydrationCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Hydration',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        Text(
+          translateText(context, 'Hydration'),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
         const Row(
@@ -846,9 +881,9 @@ class _HydrationCard extends StatelessWidget {
         const SizedBox(height: 10),
         const _ProgressBar(value: 1.4 / 2.5, color: TodayDetailsScreen.blue),
         const SizedBox(height: 6),
-        const Text(
-          '1.1 L remaining',
-          style: TextStyle(
+        Text(
+          translateText(context, '1.1 L remaining'),
+          style: const TextStyle(
             color: TodayDetailsScreen.blue,
             fontSize: 11,
             fontWeight: FontWeight.w500,
@@ -857,13 +892,14 @@ class _HydrationCard extends StatelessWidget {
         const SizedBox(height: 10),
         Row(
           children: [
-            for (final label in const [
-              '+250 ml',
-              '+500 ml',
-              '+1 L',
-              'Log Water',
+            for (final label in [
+              translateText(context, '+250 ml'),
+              translateText(context, '+500 ml'),
+              translateText(context, '+1 L'),
+              translateText(context, 'Log Water'),
             ]) ...[
-              if (label != '+250 ml') const SizedBox(width: 4),
+              if (label != translateText(context, '+250 ml'))
+                const SizedBox(width: 4),
               Expanded(child: _WaterAction(label)),
             ],
           ],
@@ -918,9 +954,9 @@ class _RemainingBudgetCard extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Remaining Budget',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        Text(
+          translateText(context, 'Remaining Budget'),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 10),
         Row(
@@ -974,42 +1010,51 @@ class _RemainingBudgetCard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: const LinearGradient(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            gradient: LinearGradient(
               colors: [Color(0xFFF8F1FF), Color(0xFFF0E8FF)],
             ),
           ),
-          child: const Row(
+          child: Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 backgroundColor: Color(0xFFE5D6FF),
                 child: Icon(
                   Icons.auto_awesome,
                   color: TodayDetailsScreen.purple,
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Suggested next meal',
-                      style: TextStyle(
+                      translateText(context, 'Suggested next meal'),
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      'You can still have a ~500-600 kcal dinner.',
-                      style: TextStyle(fontSize: 11, color: Color(0xFF50465A)),
+                      translateText(
+                        context,
+                        'You can still have a ~500-600 kcal dinner.',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF50465A),
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(CupertinoIcons.chevron_right, color: Color(0xFF482777)),
+              const Icon(
+                CupertinoIcons.chevron_right,
+                color: Color(0xFF482777),
+              ),
             ],
           ),
         ),
@@ -1087,22 +1132,28 @@ class _InsightCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.lightbulb_outline_rounded,
                     color: TodayDetailsScreen.purple,
                     size: 24,
                   ),
-                  SizedBox(width: 9),
+                  const SizedBox(width: 9),
                   Text(
-                    "Today's Insight",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                    translateText(context, "Today's Insight"),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Text(
-                "You're doing well on calories, but you're still 45g short on protein. Consider a high-protein dinner.",
-                style: TextStyle(
+                translateText(
+                  context,
+                  "You're doing well on calories, but you're still 45g short on protein. Consider a high-protein dinner.",
+                ),
+                style: const TextStyle(
                   fontSize: 12,
                   height: 1.38,
                   color: Color(0xFF2A3037),
@@ -1111,7 +1162,7 @@ class _InsightCard extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         AppNetworkImage(
           url:
               'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=240&q=80',
@@ -1141,14 +1192,16 @@ class _BottomActions extends StatelessWidget {
       children: [
         Expanded(
           child: _ActionButton(
-            label: 'Add Food',
+            label: translateText(context, 'Add Food'),
             icon: Icons.add,
             filled: true,
             onTap: () => ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                const SnackBar(
-                  content: Text('Add Food is coming soon'),
+                SnackBar(
+                  content: Text(
+                    translateText(context, 'Add Food is coming soon'),
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               ),
@@ -1157,13 +1210,15 @@ class _BottomActions extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(
           child: _ActionButton(
-            label: 'Log Water',
+            label: translateText(context, 'Log Water'),
             icon: Icons.water_drop_outlined,
             onTap: () => ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                const SnackBar(
-                  content: Text('Log Water is coming soon'),
+                SnackBar(
+                  content: Text(
+                    translateText(context, 'Log Water is coming soon'),
+                  ),
                   behavior: SnackBarBehavior.floating,
                 ),
               ),
@@ -1237,8 +1292,8 @@ class _RingPainter extends CustomPainter {
     final background = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
-      ..color = const Color(0xFFE8EAF0);
-    final foreground = Paint()
+      ..color = const Color(0xFFE8E9F1);
+    final progress = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round
@@ -1247,9 +1302,9 @@ class _RingPainter extends CustomPainter {
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       -math.pi / 2,
-      math.pi * 2 * .67,
+      2 * math.pi * (1200 / 1800),
       false,
-      foreground,
+      progress,
     );
   }
 
@@ -1263,24 +1318,26 @@ class _DonutPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final radius = math.min(size.width, size.height) / 2 - 9;
+    final radius = math.min(size.width, size.height) / 2 - 6;
+    final segments = [
+      (0.33, const Color(0xFF49B94E)),
+      (0.29, const Color(0xFF2B72DD)),
+      (0.22, const Color(0xFFFF9917)),
+      (0.16, const Color(0xFF8C47E5)),
+    ];
     var start = -math.pi / 2;
-    for (final segment in const [
-      (0.35, Color(0xFF49B94E)),
-      (0.52, Color(0xFF2B72DD)),
-      (0.13, Color(0xFFFF9917)),
-    ]) {
-      final paint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 18
-        ..color = segment.$2;
+    for (final segment in segments) {
       final sweep = segment.$1 * math.pi * 2;
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         start,
         sweep,
         false,
-        paint,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 8
+          ..strokeCap = StrokeCap.round
+          ..color = segment.$2,
       );
       start += sweep;
     }
