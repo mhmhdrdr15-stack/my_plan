@@ -28,6 +28,7 @@ lib/
 		theme/                          Shared colors and design tokens
 		widgets/                        Reusable UI primitives
 	features/
+		home/                            Dashboard and home-specific widgets
 		food_log/                       Add food, log, history, and log widgets
 		plan/                            Plan pages, editors, and plan widgets
 		nutrition/                      Progress and meal detail pages
