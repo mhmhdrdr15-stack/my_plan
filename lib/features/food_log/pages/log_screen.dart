@@ -5,7 +5,7 @@ import 'package:my_plan/features/food_log/pages/add_food_screen.dart';
 import 'package:my_plan/core/navigation/app_bottom_nav.dart';
 import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/core/state/app_state.dart';
-import 'package:my_plan/core/storage/database_helper.dart';
+import 'package:my_plan/data/shared/models/food_entry.dart';
 import 'package:my_plan/features/food_log/widgets/log_sync_button.dart';
 import 'package:my_plan/features/food_log/pages/food_log_history_page.dart';
 import 'package:my_plan/features/plan/pages/plan_screen.dart';

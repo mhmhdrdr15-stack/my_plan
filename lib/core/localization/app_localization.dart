@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-final ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
+final ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('en'));
 
 const Map<String, String> _arabicTranslations = {
   'Home': 'الرئيسية',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_plan/core/state/app_state.dart';
 import 'package:my_plan/core/storage/database_helper.dart';
+import 'package:my_plan/data/shared/models/food_entry.dart';
 
 class HistoryFood {
   final String id;
