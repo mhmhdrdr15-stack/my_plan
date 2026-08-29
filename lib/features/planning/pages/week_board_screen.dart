@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_plan/data/shared/models/meal_assignment.dart';
 import 'package:my_plan/data/shared/models/weekly_plan.dart';
 
 class WeekBoardScreen extends StatefulWidget {
   final WeeklyPlan initialPlan;
 
-  const WeekBoardScreen({
-    super.key,
-    required this.initialPlan,
-  });
+  const WeekBoardScreen({super.key, required this.initialPlan});
 
   @override
   State<WeekBoardScreen> createState() => _WeekBoardScreenState();
@@ -32,7 +28,10 @@ class _WeekBoardScreenState extends State<WeekBoardScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context, plan),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF18182B)),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF18182B),
+          ),
         ),
         title: const Text(
           'الأسبوع',
@@ -56,7 +55,10 @@ class _WeekBoardScreenState extends State<WeekBoardScreen> {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_month_rounded, color: Color(0xFF5B35F5)),
+                    const Icon(
+                      Icons.calendar_month_rounded,
+                      color: Color(0xFF5B35F5),
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
@@ -75,7 +77,7 @@ class _WeekBoardScreenState extends State<WeekBoardScreen> {
               Expanded(
                 child: ListView.separated(
                   itemCount: plan.days.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final day = plan.days[index];
                     final assignments = plan.assignments

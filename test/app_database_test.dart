@@ -8,6 +8,10 @@ void main() {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
+  tearDown(() async {
+    await AppDatabase().close();
+  });
+
   test('AppDatabase stores local app data', () async {
     final db = AppDatabase();
     await db.deleteDatabase();

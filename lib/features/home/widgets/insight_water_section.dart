@@ -51,36 +51,74 @@ class _InsightCard extends StatelessWidget {
               Container(
                 width: 30,
                 height: 30,
-                decoration: BoxDecoration(color: AppColors.insightBg, borderRadius: BorderRadius.circular(11)),
-                child: const Icon(Icons.smart_toy_outlined, size: 17, color: AppColors.primary),
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  translateText(context, 'Daily Insight'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: AppColors.text, fontSize: 13, fontWeight: FontWeight.w800),
+                decoration: BoxDecoration(
+                  color: AppColors.insightBg,
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: const Icon(
+                  Icons.smart_toy_outlined,
+                  size: 17,
+                  color: AppColors.primary,
                 ),
               ),
-              const Icon(Icons.more_horiz_rounded, color: Color(0xFF777F93), size: 18),
+              const SizedBox(width: 6),
+              const Expanded(child: SizedBox.shrink()),
+              const Icon(
+                Icons.more_horiz_rounded,
+                color: Color(0xFF777F93),
+                size: 18,
+              ),
             ],
           ),
           const SizedBox(height: 13),
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: translateText(context, 'You need '), style: const TextStyle(color: AppColors.text, fontSize: 12, height: 1.45)),
-                TextSpan(text: translateText(context, '~45g more protein'), style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w800, height: 1.45)),
-                TextSpan(text: '\n${translateText(context, 'to reach your daily goal.')}', style: const TextStyle(color: AppColors.text, fontSize: 12, height: 1.45)),
+                TextSpan(
+                  text: translateText(context, 'You need '),
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 12,
+                    height: 1.45,
+                  ),
+                ),
+                TextSpan(
+                  text: translateText(context, '~45g more protein'),
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    height: 1.45,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      '\n${translateText(context, 'to reach your daily goal.')}',
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 12,
+                    height: 1.45,
+                  ),
+                ),
               ],
             ),
           ),
           const Spacer(),
           TextButton(
             onPressed: () {},
-            style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-            child: Text(translateText(context, 'See suggestions'), style: const TextStyle(color: AppColors.primary, fontSize: 11, fontWeight: FontWeight.w800)),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              translateText(context, 'See suggestions'),
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
@@ -93,7 +131,11 @@ class _WaterCard extends StatelessWidget {
   final double goal;
   final ValueChanged<double> onAddWater;
 
-  const _WaterCard({required this.current, required this.goal, required this.onAddWater});
+  const _WaterCard({
+    required this.current,
+    required this.goal,
+    required this.onAddWater,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,24 +147,57 @@ class _WaterCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.water_drop_rounded, color: Color(0xFF3587ED), size: 21),
+              const Icon(
+                Icons.water_drop_rounded,
+                color: Color(0xFF3587ED),
+                size: 21,
+              ),
               const SizedBox(width: 6),
-              Expanded(child: Text(translateText(context, 'Hydration'), style: const TextStyle(color: AppColors.text, fontSize: 13, fontWeight: FontWeight.w800))),
+              Expanded(
+                child: Text(
+                  translateText(context, 'Hydration'),
+                  style: const TextStyle(
+                    color: AppColors.text,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 13),
-          Text('${current.toStringAsFixed(1)} L / ${goal.toStringAsFixed(1)} L', style: const TextStyle(color: AppColors.text, fontSize: 18, fontWeight: FontWeight.w800)),
+          Text(
+            '${current.toStringAsFixed(1)} L / ${goal.toStringAsFixed(1)} L',
+            style: const TextStyle(
+              color: AppColors.text,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(value: progress, minHeight: 7, backgroundColor: const Color(0xFFE7F0FC), valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF3587ED))),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 7,
+              backgroundColor: const Color(0xFFE7F0FC),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF3587ED),
+              ),
+            ),
           ),
           const Spacer(),
           Row(
             children: [
-              _WaterButton(label: translateText(context, '+250 ml'), onTap: () => onAddWater(.25)),
+              _WaterButton(
+                label: translateText(context, '+250 ml'),
+                onTap: () => onAddWater(.25),
+              ),
               const SizedBox(width: 4),
-              _WaterButton(label: translateText(context, '+500 ml'), onTap: () => onAddWater(.5)),
+              _WaterButton(
+                label: translateText(context, '+500 ml'),
+                onTap: () => onAddWater(.5),
+              ),
             ],
           ),
         ],
@@ -150,7 +225,10 @@ class _WaterButton extends StatelessWidget {
           side: const BorderSide(color: Color(0xFFD7E6FA)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+        child: Text(
+          label,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }

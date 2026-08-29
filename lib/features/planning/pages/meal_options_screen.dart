@@ -41,7 +41,10 @@ class _MealOptionsScreenState extends State<MealOptionsScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF18182B)),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF18182B),
+          ),
         ),
         title: Text(
           widget.mealType,
@@ -76,7 +79,7 @@ class _MealOptionsScreenState extends State<MealOptionsScreen> {
               Expanded(
                 child: ListView.separated(
                   itemCount: _templates.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final template = _templates[index];
                     return Container(

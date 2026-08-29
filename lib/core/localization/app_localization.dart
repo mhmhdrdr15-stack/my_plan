@@ -221,7 +221,8 @@ const Map<String, String> _arabicTranslations = {
   'Open Today Details': 'فتح تفاصيل اليوم',
   'Open notification': 'فتح الإشعار',
   'Targets need adjustment': 'الأهداف تحتاج إلى تعديل',
-  'Your macro targets represent approximately': 'تمثل أهداف العناصر الغذائية حوالي',
+  'Your macro targets represent approximately':
+      'تمثل أهداف العناصر الغذائية حوالي',
   'Go Back': 'رجوع',
   'Save Anyway': 'حفظ على أي حال',
   'Edit Daily Targets': 'تعديل الأهداف اليومية',
@@ -230,9 +231,11 @@ const Map<String, String> _arabicTranslations = {
       'تُستخدم هذه الأهداف في شاشات الرئيسية والخطة والتقدم.',
   'Target Mode': 'وضع الهدف',
   'Auto calculate': 'حساب تلقائي',
-  'Based on your goal, activity and profile': 'بناءً على هدفك ونشاطك وملفك الشخصي',
+  'Based on your goal, activity and profile':
+      'بناءً على هدفك ونشاطك وملفك الشخصي',
   'Custom': 'مخصص',
-  'Set your calorie and macro targets manually': 'حدد أهداف السعرات والعناصر الغذائية يدويًا',
+  'Set your calorie and macro targets manually':
+      'حدد أهداف السعرات والعناصر الغذائية يدويًا',
   'Daily Calories': 'السعرات اليومية',
   'Your total daily energy target': 'إجمالي هدف الطاقة اليومي',
   'Daily protein target': 'هدف البروتين اليومي',
@@ -245,7 +248,8 @@ const Map<String, String> _arabicTranslations = {
   'Activity': 'النشاط',
   'Moderately Active': 'نشاط متوسط',
   'Save Targets': 'حفظ الأهداف',
-  'Changes will update your daily plan and progress targets.': 'ستحدّث التغييرات خطتك اليومية وأهداف التقدم.',
+  'Changes will update your daily plan and progress targets.':
+      'ستحدّث التغييرات خطتك اليومية وأهداف التقدم.',
   'Meal Type': 'نوع الوجبة',
   'Time': 'الوقت',
   'Choose the meal type and time': 'اختر نوع الوجبة والوقت',
@@ -256,18 +260,23 @@ const Map<String, String> _arabicTranslations = {
   'Your lunch is planned for 2:00 PM.': 'غداؤك مخطط الساعة 02:00 مساءً.',
   '10 min ago': 'منذ 10 دقائق',
   "You're behind on hydration": 'تأخرت في شرب الماء',
-  "You still need 1.1 L to reach today's goal.": 'ما زلت تحتاج إلى 1.1 لتر لتحقيق هدف اليوم.',
+  "You still need 1.1 L to reach today's goal.":
+      'ما زلت تحتاج إلى 1.1 لتر لتحقيق هدف اليوم.',
   '1 hour ago': 'منذ ساعة',
   "You're doing great today": 'أداؤك رائع اليوم',
-  "You're on track to reach your calorie target.": 'أنت على المسار الصحيح لتحقيق هدف السعرات.',
+  "You're on track to reach your calorie target.":
+      'أنت على المسار الصحيح لتحقيق هدف السعرات.',
   '3 hours ago': 'منذ 3 ساعات',
   "You're short on protein": 'لديك نقص في البروتين',
-  'You still need around 45g of protein today.': 'ما زلت تحتاج إلى حوالي 45 جرامًا من البروتين اليوم.',
+  'You still need around 45g of protein today.':
+      'ما زلت تحتاج إلى حوالي 45 جرامًا من البروتين اليوم.',
   'Yesterday': 'أمس',
   '7 day streak! 🔥': 'سلسلة 7 أيام! 🔥',
-  "You've logged your meals consistently for 7 days.": 'سجلت وجباتك بانتظام لمدة 7 أيام.',
+  "You've logged your meals consistently for 7 days.":
+      'سجلت وجباتك بانتظام لمدة 7 أيام.',
   'Your weekly progress is ready': 'تقدمك الأسبوعي جاهز',
-  'See your calorie, protein and consistency trends.': 'شاهد اتجاهات السعرات والبروتين والالتزام.',
+  'See your calorie, protein and consistency trends.':
+      'شاهد اتجاهات السعرات والبروتين والالتزام.',
   'Monday': 'الإثنين',
   'More': 'المزيد',
   'Scan is coming soon': 'ميزة المسح قادمة قريبًا',
@@ -388,8 +397,11 @@ const Map<String, String> _arabicTranslations = {
 };
 
 class AppLocalization {
-  static bool isArabic(BuildContext context) =>
-      Localizations.localeOf(context).languageCode == 'ar';
+  static bool isArabic(BuildContext context) {
+    final locale = appLocale.value;
+    return locale.languageCode == 'ar' ||
+        Localizations.localeOf(context).languageCode == 'ar';
+  }
 
   static String text(BuildContext context, String english, String arabic) {
     return isArabic(context) ? arabic : english;
@@ -412,7 +424,7 @@ class AppLanguageScope extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Nutrition',
-          locale: locale,
+          locale: appLocale.value,
           supportedLocales: const [Locale('en'), Locale('ar')],
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,

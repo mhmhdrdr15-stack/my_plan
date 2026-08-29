@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_plan/core/localization/app_localization.dart';
 import 'package:my_plan/core/state/app_state.dart';
 import 'package:my_plan/core/theme/app_colors.dart';
 import 'package:my_plan/features/home/widgets/home_header.dart';
@@ -43,6 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 14),
                   const TodayProgressCard(),
                   const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(
+                      translateText(context, 'Daily Insight'),
+                      style: const TextStyle(
+                        color: AppColors.text,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
                   NextMealCard(
                     mealName: 'Snack',
                     time: '5:30 PM',

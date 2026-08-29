@@ -234,6 +234,13 @@ class AppDatabase {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> close() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
+  }
+
   Future<void> deleteDatabase() async {
     if (kIsWeb) {
       _webSettings.clear();
@@ -247,9 +254,9 @@ class AppDatabase {
       return;
     }
 
+    await close();
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'my_plan.db');
     await databaseFactory.deleteDatabase(path);
-    _database = null;
   }
 }
