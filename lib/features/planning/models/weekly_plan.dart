@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'meal_template.dart';
 
 class WeeklyPlan {
@@ -18,198 +17,83 @@ class WeeklyPlan {
     List<MealTemplate>? templates,
   }) {
     return WeeklyPlan(
-      days:
-          days ?? this.days,
-      mealTypes:
-          mealTypes ?? this.mealTypes,
-      templates:
-          templates ?? this.templates,
+      days: days ?? this.days,
+      mealTypes: mealTypes ?? this.mealTypes,
+      templates: templates ?? this.templates,
     );
   }
 
-  List<MealTemplate> templatesForMealType(
-    String mealType,
-  ) {
+  List<MealTemplate> templatesForMealType(String mealType) {
+    return templates
+        .where((template) => template.mealType == mealType)
+        .toList();
+  }
+
+  List<MealTemplate> templatesForDay(String day) {
+    return templates.where((template) => template.assignedTo(day)).toList();
+  }
+
+  List<MealTemplate> templatesForDayAndMeal(String day, String mealType) {
     return templates
         .where(
           (template) =>
-              template.mealType ==
-              mealType,
+              template.mealType == mealType && template.assignedTo(day),
         )
         .toList();
   }
 
-  List<MealTemplate> templatesForDay(
-    String day,
-  ) {
-    return templates
-        .where(
-          (template) =>
-              template.assignedTo(day),
-        )
-        .toList();
+  int countForMealType(String mealType) =>
+      templatesForMealType(mealType).length;
+
+  WeeklyPlan addTemplate(MealTemplate template) {
+    final updated = List<MealTemplate>.from(templates)..add(template);
+    return copyWith(templates: updated);
   }
 
-  List<MealTemplate> templatesForDayAndMeal(
-    String day,
-    String mealType,
-  ) {
-    return templates
-        .where(
-          (template) =>
-              template.mealType ==
-                  mealType &&
-              template.assignedTo(day),
-        )
-        .toList();
-  }
-
-  int countForMealType(
-    String mealType,
-  ) {
-    return templatesForMealType(
-      mealType,
-    ).length;
-  }
-
-  WeeklyPlan addTemplate(
-    MealTemplate template,
-  ) {
-    final updated =
-        List<MealTemplate>.from(
-      templates,
-    );
-
-    updated.add(
-      template,
-    );
-
-    return copyWith(
-      templates:
-          updated,
-    );
-  }
-
-  WeeklyPlan updateTemplate(
-    MealTemplate template,
-  ) {
-    final updated =
-        List<MealTemplate>.from(
-      templates,
-    );
-
-    final index =
-        updated.indexWhere(
-      (item) =>
-          item.id ==
-          template.id,
-    );
-
+  WeeklyPlan updateTemplate(MealTemplate template) {
+    final updated = List<MealTemplate>.from(templates);
+    final index = updated.indexWhere((item) => item.id == template.id);
     if (index == -1) {
-      return addTemplate(
-        template,
-      );
+      return addTemplate(template);
     }
-
-    updated[index] =
-        template;
-
-    return copyWith(
-      templates:
-          updated,
-    );
+    updated[index] = template;
+    return copyWith(templates: updated);
   }
 
-  WeeklyPlan removeTemplate(
-    String templateId,
-  ) {
-    final updated =
-        templates
-            .where(
-              (template) =>
-                  template.id !=
-                  templateId,
-            )
-            .toList();
-
-    return copyWith(
-      templates:
-          updated,
-    );
+  WeeklyPlan removeTemplate(String templateId) {
+    final updated = templates
+        .where((template) => template.id != templateId)
+        .toList();
+    return copyWith(templates: updated);
   }
 
   WeeklyPlan assignTemplateToDay({
     required String templateId,
     required String day,
   }) {
-    final updated =
-        templates.map(
-      (template) {
-        if (template.id !=
-            templateId) {
-          return template;
-        }
-
-        return template.assignTo(
-          day,
-        );
-      },
-    ).toList();
-
-    return copyWith(
-      templates:
-          updated,
-    );
+    final updated = templates.map((template) {
+      if (template.id != templateId) return template;
+      return template.assignTo(day);
+    }).toList();
+    return copyWith(templates: updated);
   }
 
   WeeklyPlan removeTemplateFromDay({
     required String templateId,
     required String day,
   }) {
-    final updated =
-        templates.map(
-      (template) {
-        if (template.id !=
-            templateId) {
-          return template;
-        }
-
-        return template.removeFrom(
-          day,
-        );
-      },
-    ).toList();
-
-    return copyWith(
-      templates:
-          updated,
-    );
+    final updated = templates.map((template) {
+      if (template.id != templateId) return template;
+      return template.removeFrom(day);
+    }).toList();
+    return copyWith(templates: updated);
   }
 
-  WeeklyPlan clearDay(
-    String day,
-  ) {
-    final updated =
-        templates.map(
-      (template) {
-        if (!template.assignedTo(
-          day,
-        )) {
-          return template;
-        }
-
-        return template.removeFrom(
-          day,
-        );
-      },
-    ).toList();
-
-    return copyWith(
-      templates:
-          updated,
-    );
+  WeeklyPlan clearDay(String day) {
+    final updated = templates.map((template) {
+      if (!template.assignedTo(day)) return template;
+      return template.removeFrom(day);
+    }).toList();
+    return copyWith(templates: updated);
   }
 }
-=======
-export 'package:my_plan/data/shared/models/weekly_plan.dart';
->>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
