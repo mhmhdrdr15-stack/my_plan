@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -15,17 +16,35 @@ class AppDatabase {
 
   Database? _database;
 
+<<<<<<< HEAD
   static const int _databaseVersion = 2;
 
   // ============================================================
   // DATABASE
   // ============================================================
+=======
+  final Map<String, String> _webSettings = {
+    'water': '1.4',
+    'water_goal': '2.5',
+    'locale': 'en',
+    'logged_foods': '4',
+  };
 
-  Future<Database> get database async {
-    _database ??= await init();
+  final List<FoodEntry> _webFoodEntries = <FoodEntry>[];
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
+
+  Future<Database> Future<Database> get database async {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'SQLite is unavailable on web. Using in-memory fallback.',
+      );
+    }
+
+    _database ??= await _openDatabase();
     return _database!;
   }
 
+<<<<<<< HEAD
   Future<Database> init() async {
     if (_database != null) {
       return _database!;
@@ -45,11 +64,50 @@ class AppDatabase {
       version: _databaseVersion,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
+=======
+  Future<void> init() async {
+    if (kIsWeb) {
+      _webSettings['water'] ??= '1.4';
+      _webSettings['water_goal'] ??= '2.5';
+      _webSettings['locale'] ??= 'en';
+      _webSettings['logged_foods'] ??= '4';
+      return;
+    }
+
+    _database ??= await _openDatabase();
+    await _ensureDefaults();
+  }
+
+  Future<Database> _openDatabase() async {
+    final databasesPath = await getDatabasesPath();
+    final path = join(databasesPath, 'my_plan.db');
+
+    final db = await openDatabase(
+      path,
+      version: 1,
+      onCreate: (database, version) async {
+        await database.execute('''
+          CREATE TABLE app_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+          )
+        ''');
+
+        await database.execute('''
+          CREATE TABLE food_entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            meal_type TEXT NOT NULL,
+            amount TEXT NOT NULL,
+            calories TEXT NOT NULL,
+            created_at TEXT NOT NULL
+          )
+        ''');
+      },
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
     );
 
-    await _ensureDefaults();
-
-    return _database!;
+    return db;
   }
 
   // ============================================================
@@ -282,8 +340,20 @@ class AppDatabase {
   // ============================================================
 
   Future<void> _ensureDefaults() async {
+<<<<<<< HEAD
     final db =
         await database;
+=======
+    if (kIsWeb) {
+      _webSettings['water'] ??= '1.4';
+      _webSettings['water_goal'] ??= '2.5';
+      _webSettings['locale'] ??= 'en';
+      _webSettings['logged_foods'] ??= '4';
+      return;
+    }
+
+    final db = await database;
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
 
     final defaults = {
       'water': '1.4',
@@ -317,6 +387,7 @@ class AppDatabase {
   // ============================================================
 
   Future<double> loadWater() async {
+<<<<<<< HEAD
     final value =
         await _loadString('water');
 
@@ -349,6 +420,31 @@ class AppDatabase {
       'water',
       value.toString(),
     );
+=======
+    if (kIsWeb) {
+      return double.tryParse(_webSettings['water'] ?? '1.4') ?? 1.4;
+    }
+
+    final value = await _loadString('water');
+    return value == null ? 1.4 : double.tryParse(value) ?? 1.4;
+  }
+
+  Future<double> loadWaterGoal() async {
+    if (kIsWeb) {
+      return double.tryParse(_webSettings['water_goal'] ?? '2.5') ?? 2.5;
+    }
+
+    final value = await _loadString('water_goal');
+    return value == null ? 2.5 : double.tryParse(value) ?? 2.5;
+  }
+
+  Future<String?> loadLocale() async {
+    if (kIsWeb) {
+      return _webSettings['locale'];
+    }
+
+    return _loadString('locale');
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
   }
 
   Future<void> saveWaterGoal(
@@ -384,6 +480,7 @@ class AppDatabase {
   // ============================================================
 
   Future<int> loadLoggedFoods() async {
+<<<<<<< HEAD
     final value =
         await _loadString(
       'logged_foods',
@@ -453,6 +550,50 @@ class AppDatabase {
               value,
             ) ??
             220.0;
+=======
+    if (kIsWeb) {
+      return int.tryParse(_webSettings['logged_foods'] ?? '4') ?? 4;
+    }
+
+    final value = await _loadString('logged_foods');
+    return value == null ? 4 : int.tryParse(value) ?? 4;
+  }
+
+  Future<void> saveWater(double value) async {
+    if (kIsWeb) {
+      _webSettings['water'] = value.toString();
+      return;
+    }
+
+    await _saveString('water', value.toString());
+  }
+
+  Future<void> saveWaterGoal(double value) async {
+    if (kIsWeb) {
+      _webSettings['water_goal'] = value.toString();
+      return;
+    }
+
+    await _saveString('water_goal', value.toString());
+  }
+
+  Future<void> saveLocale(String value) async {
+    if (kIsWeb) {
+      _webSettings['locale'] = value;
+      return;
+    }
+
+    await _saveString('locale', value);
+  }
+
+  Future<void> saveLoggedFoods(int value) async {
+    if (kIsWeb) {
+      _webSettings['logged_foods'] = value.toString();
+      return;
+    }
+
+    await _saveString('logged_foods', value.toString());
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
   }
 
   Future<double>
@@ -511,6 +652,7 @@ class AppDatabase {
     double carbsPer100g = 0.0,
     double fatPer100g = 0.0,
   }) async {
+<<<<<<< HEAD
     final db =
         await database;
 
@@ -533,6 +675,49 @@ class AppDatabase {
       },
       conflictAlgorithm:
           ConflictAlgorithm.replace,
+=======
+    if (kIsWeb) {
+      _webFoodEntries.add(
+        FoodEntry(
+          id: _webFoodEntries.length + 1,
+          name: name,
+          mealType: mealType,
+          amount: amount,
+          calories: calories,
+          createdAt: DateTime.now(),
+        ),
+      );
+      return;
+    }
+
+    final db = await database;
+    await db.insert('food_entries', {
+      'name': name,
+      'meal_type': mealType,
+      'amount': amount,
+      'calories': calories,
+      'created_at': DateTime.now().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<List<FoodEntry>> loadFoodEntries() async {
+    if (kIsWeb) {
+      return List<FoodEntry>.from(_webFoodEntries.reversed);
+    }
+
+    final db = await database;
+    final result = await db.query('food_entries', orderBy: 'created_at DESC');
+    return result.map(FoodEntry.fromMap).toList();
+  }
+
+  Future<String?> _loadString(String key) async {
+    final db = await database;
+    final result = await db.query(
+      'app_settings',
+      columns: ['value'],
+      where: 'key = ?',
+      whereArgs: [key],
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
     );
   }
 
@@ -559,6 +744,7 @@ class AppDatabase {
         .toList();
   }
 
+<<<<<<< HEAD
   // ============================================================
   // MEAL SCHEDULE SAVE
   // ============================================================
@@ -939,5 +1125,33 @@ class AppDatabase {
         .deleteDatabase(
       path,
     );
+=======
+  Future<void> close() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
   }
+
+  Future<void> deleteDatabase() async {
+    if (kIsWeb) {
+      _webSettings.clear();
+      _webFoodEntries.clear();
+      _webSettings.addAll({
+        'water': '1.4',
+        'water_goal': '2.5',
+        'locale': 'en',
+        'logged_foods': '4',
+      });
+      return;
+    }
+
+    await close();
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'my_plan.db');
+    await databaseFactory.deleteDatabase(path);
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
+
+return null;}
 }
+    return null;

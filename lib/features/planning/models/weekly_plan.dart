@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'meal_template.dart';
 
 class WeeklyPlan {
@@ -209,3 +210,6 @@ class WeeklyPlan {
     );
   }
 }
+=======
+export 'package:my_plan/data/shared/models/weekly_plan.dart';
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379

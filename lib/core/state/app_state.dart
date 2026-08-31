@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 
+=======
+import 'package:my_plan/core/localization/app_localization.dart';
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
 import 'package:my_plan/core/storage/database_helper.dart';
 import 'package:my_plan/core/state/controllers/food_log_controller.dart';
 import 'package:my_plan/core/state/controllers/hydration_controller.dart';
@@ -53,9 +57,11 @@ class AppState extends ChangeNotifier {
     Locale value,
   ) {
     language.locale = value;
+    appLocale.value = value;
     notifyListeners();
   }
 
+<<<<<<< HEAD
   Future<void> setLocale(
     Locale value,
   ) {
@@ -111,6 +117,18 @@ class AppState extends ChangeNotifier {
       planning.load(),
     ]);
 
+=======
+  int get loggedFoods => foodLog.loggedFoods;
+  List<FoodEntry> get foodEntries => foodLog.entries;
+
+  Future<void> load() async {
+    await _database.init();
+    hydration.addListener(notifyListeners);
+    language.addListener(notifyListeners);
+    foodLog.addListener(notifyListeners);
+    await Future.wait([hydration.load(), language.load(), foodLog.load()]);
+    appLocale.value = language.locale;
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
     notifyListeners();
   }
 
@@ -125,9 +143,19 @@ class AppState extends ChangeNotifier {
     return foodLog.entries;
   }
 
+<<<<<<< HEAD
   // ============================================================
   // ADD FOOD
   // ============================================================
+=======
+  Future<void> addWater(double amount) => hydration.add(amount);
+
+  Future<void> setLocale(Locale value) async {
+    await language.setLocale(value);
+    appLocale.value = value;
+    notifyListeners();
+  }
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379
 
   Future<void> addFood({
     String name = 'Food',

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:my_plan/features/planning/models/meal.dart';
 
 class MealTemplate {
@@ -99,3 +100,6 @@ class MealTemplate {
     );
   }
 }
+=======
+export 'package:my_plan/data/shared/models/meal_template.dart';
+>>>>>>> aa293c52c23f1846dac6deae987702c1a4c00379

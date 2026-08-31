@@ -18,6 +18,11 @@ void main() {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
+  setUp(() async {
+    await appState.setLocale(const Locale('en'));
+    appLocale.value = const Locale('en');
+  });
+
   testWidgets('opens today details from the dashboard', (
     WidgetTester tester,
   ) async {

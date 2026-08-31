@@ -13,36 +13,78 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-## Source Structure
+## Target Architecture
 
-Application code is organized by responsibility:
+The project follows a clean, scalable feature-first structure. The active application lives under `lib/app`, `lib/core`, `lib/data`, and `lib/features`. The legacy merge artifacts stay under `lib/legacy` and are not part of the active app flow.
 
 ```text
 lib/
-	main.dart                         App entrypoint and dashboard composition
-	core/
-		localization/                   English/Arabic localization
-		navigation/                     Shared bottom navigation
-		state/                          App-wide ChangeNotifier state
-		storage/                        SQLite database access
-		theme/                          Shared colors and design tokens
-		widgets/                        Reusable UI primitives
-	features/
-		home/                            Dashboard and home-specific widgets
-		food_log/                       Add food, log, history, and log widgets
-		plan/                            Plan pages, editors, and plan widgets
-		nutrition/                      Progress and meal detail pages
-		notifications/                  Notification pages and models
-		settings/                       Settings pages
+  app/
+    app.dart                     App bootstrap and language scope
+    app_router.dart              Route mapping for main tab screens
+    app_shell.dart               Main shell with bottom navigation
+    exports.dart                 App-layer public exports
+
+  core/
+    localization/               Arabic/English strings and locale handling
+    navigation/                 Shared navigation widgets and tab logic
+    state/                      App-wide state and controllers
+    storage/                    SQLite access and persistence helpers
+    theme/                      Color tokens and shared visual design values
+    widgets/                    Reusable UI components and layouts
+    exports.dart                 Core-layer public exports
+
+  data/
+    shared/
+      models/                   Domain models used across features
+      repositories/            Data access and persistence abstractions
+
+  features/
+    home/
+      pages/
+      widgets/
+    food_log/
+      pages/
+      widgets/
+    plan/
+      pages/
+      widgets/
+    planning/
+      pages/
+      services/
+      widgets/
+    nutrition/
+      pages/
+    notifications/
+      pages/
+      models/
+    settings/
+      pages/
+    exports.dart                 Feature-layer public exports
+
+  legacy/
+    README.md                   Archive rules and migration notes
+    old_root/                   Old root-level files kept for reference only
+    screens/                    Archived screen implementations no longer in use
+
+  main.dart                     App entrypoint
+  app_localization.dart         Deprecated compatibility export
+  app_state.dart               Deprecated compatibility export
+  database_helper.dart         Deprecated compatibility export
 ```
 
-When adding code, keep feature-specific code inside its feature folder. Move
-only genuinely reusable code into `core`; avoid importing feature pages from
-`core` to keep dependencies flowing in one direction.
+### Rules for future work
+- Keep feature-specific screens, widgets, and services inside the matching feature folder.
+- Put reusable cross-cutting logic in `core` only when it is truly shared.
+- Keep domain/data models in `data/shared/models` and repository logic in `data/shared/repositories`.
+- Do not import from `lib/legacy` in active features.
+- If a feature becomes reused broadly, promote it to `core` only after it is clearly independent of a single screen.
+- Prefer small, single-purpose files over large root-level screens.
 
-The small root files `app_state.dart`, `app_localization.dart`, and
-`database_helper.dart` are compatibility exports for older imports. New code
-should import their `core/...` paths directly.
+### Active vs legacy
+- Active app flow: `lib/app`, `lib/core`, `lib/data`, `lib/features`
+- Legacy archive: `lib/legacy`
+- Legacy code must remain read-only unless intentionally migrated back into active modules.
 
 ## Project Notes
 
